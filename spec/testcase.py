@@ -26,7 +26,8 @@ def main():
     # pix2vec_ring(testcase)
     nside2pixarea(testcase)
     nside2resol(testcase)
-    
+    corners_nest(testcase)
+    corners_ring(testcase)
 
     json.dump(testcase, args.out, indent=2)
 
@@ -165,6 +166,34 @@ def nside2resol(testcase):
             expected=healpy.nside2resol(*args)
         ))
     testcase['nside2resol'] = cs
+
+
+def corners_nest(testcase):
+    cs = []
+    for norder in range(16):
+        nside = 1 << norder
+        for i in range(1000):
+            ipix = random.randrange(12 * nside * nside)
+            args = (nside, ipix)
+            cs.append(dict(
+                args=args,
+                expected=healpy.boundaries(*args, nest=True).T.tolist()
+            ))
+    testcase['corners_nest'] = cs
+
+
+def corners_ring(testcase):
+    cs = []
+    for norder in range(16):
+        nside = 1 << norder
+        for i in range(1000):
+            ipix = random.randrange(12 * nside * nside)
+            args = (nside, ipix)
+            cs.append(dict(
+                args=args,
+                expected=healpy.boundaries(*args).T.tolist()
+            ))
+    testcase['corners_ring'] = cs
 
 
 def random_vec():

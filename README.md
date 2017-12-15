@@ -26,8 +26,8 @@ healpix.nest2ring(16, 1130) // => 1504
 |pix2vec_ring       ||
 |query_disc_nest    ||
 |query_disc_ring    ||
-|boundaries_nest    ||
-|boundaries_ring    ||
+|corners_nest       |😀|
+|corners_ring       ||
 |nside2resol        |😀|
 |nside2pixarea      |😀|
 

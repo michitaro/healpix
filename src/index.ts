@@ -67,9 +67,31 @@ export function pix2vec_nest(nside: number, ipix: number) {
 // }
 
 
-export function query_disc_nest(nside: number, v: V3) {
-    // const { z, a } = vec2za(v[0], v[1], v[2])
+// export function query_disc_nest(nside: number, v: V3) {
+//     const { z, a } = vec2za(v[0], v[1], v[2])
+// }
+
+
+export function corners_nest(nside: number, ipix: number) {
+    const { f, x, y } = nest2fxy(nside, ipix)
+    const { t, u } = fxy2tu(nside, f, x, y)
+    const d = PI_4 / nside
+    const xyzs: V3[] = []
+    for (const [tt, uu] of [
+        [0, d],
+        [-d, 0],
+        [0, -d],
+        [d, 0],
+    ]) {
+        const { z, a } = tu2za(t + tt, u + uu)
+        xyzs.push(za2vec(z, a))
+    }
+    return xyzs
 }
+
+
+// export function corners_ring(nside: number, ipix: number) {
+// }
 
 
 // pixel area
@@ -125,14 +147,17 @@ function za2tu(z: number, a: number) {
 
 // sphirical projection -> (z, phi)
 function tu2za(t: number, u: number) {
-    if (Math.abs(u) <= Math.PI / 4) { // equatorial belt
+    const abs_u = Math.abs(u)
+    if (abs_u >= PI_2) { // error
+        return { z: sign(u), a: 0 }
+    }
+    if (abs_u <= Math.PI / 4) { // equatorial belt
         const z = 8 / (3 * PI) * u
         const a = t
         return { z, a }
     }
     else { // polar caps
         const t_t = t % (Math.PI / 2)
-        const abs_u = Math.abs(u)
         const a = t - (abs_u - PI_4) / (abs_u - PI_2) * (t_t - PI_4)
         const z = sign(u) * (1 - 1 / 3 * square(2 - 4 * abs_u / PI))
         return { z, a }
@@ -154,7 +179,7 @@ function vec2za(x: number, y: number, z: number) {
 
 
 // (z = cos(theta), phi) -> (x, y, z)
-function za2vec(z: number, a: number) {
+function za2vec(z: number, a: number): V3 {
     const sin_theta = Math.sqrt(1 - z * z)
     const x = sin_theta * Math.cos(a)
     const y = sin_theta * Math.sin(a)
@@ -304,6 +329,7 @@ function fxy2ring(nside: number, f: number, x: number, y: number) {
 }
 
 
+// f, x, y -> sphirical projection
 function fxy2tu(nside: number, f: number, x: number, y: number) {
     const f_row = Math.floor(f / 4)
     const f1 = f_row + 2
@@ -311,7 +337,7 @@ function fxy2tu(nside: number, f: number, x: number, y: number) {
     const v = x + y
     const h = x - y
     const i = f1 * nside - v - 1
-    const k = (f2 * nside + h + (8 * nside)) % (8 * nside)
+    const k = (f2 * nside + h + (8 * nside))
     const t = k / nside * PI_4
     const u = PI_2 - i / nside * PI_4
     return { t, u }
