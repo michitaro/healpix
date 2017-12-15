@@ -5,6 +5,7 @@
   "types": "./lib/index.d.ts",
   "scripts": {
     "prepublish": "tsc",
+    "test": "to test, do 'npm run my-test'",
     "my-test": "python spec/testcase.py > spec/testcase.json && ts-node spec/test.ts"
   },
   "keywords": [
