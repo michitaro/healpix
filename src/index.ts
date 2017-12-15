@@ -49,9 +49,50 @@ export function nest2ring(nside: number, ipix: number) {
 }
 
 
-// export function ring2nest(nside: number, ipix: number) {
-//     throw new Error('not implemented')
-// }
+// TODO: cleanup
+export function ring2nest(nside: number, ipix: number) {
+    if (nside == 1)
+        return ipix
+    const polar_lim = 2 * nside * (nside - 1)
+    if (ipix < polar_lim) { // north polar cap
+        const i = Math.floor((Math.sqrt(1 + 2 * ipix) + 1) / 2)
+        const j = ipix - 2 * i * (i - 1)
+        const f = Math.floor(j / i)
+        const k = j % i
+        const x = nside - i + k
+        const y = nside - 1 - k
+        return fxy2nest(nside, f, x, y)
+    }
+    if (ipix < polar_lim + 8 * nside * nside) { // equatorial belt
+        const k = ipix - polar_lim
+        const ring = 4 * nside
+        const i = nside - Math.floor(k / ring)
+        const s = i % 2 == 0 ? 1 : 0
+        const j = 2 * (k % ring) + s
+        const jj = j - 4 * nside
+        const ii = i + 5 * nside - 1
+        const pp = (ii + jj) / 2
+        const qq = (ii - jj) / 2
+        const PP = Math.floor(pp / nside)
+        const QQ = Math.floor(qq / nside)
+        const V = 5 - (PP + QQ)
+        const H = PP - QQ + 4
+        const f = 4 * V + (H >> 1) % 4
+        const x = pp % nside
+        const y = qq % nside
+        return fxy2nest(nside, f, x, y)
+    }
+    else { // south polar cap
+        const p = 12 * nside * nside - ipix - 1
+        const i = Math.floor((Math.sqrt(1 + 2 * p) + 1) / 2)
+        const j = p - 2 * i * (i - 1)
+        const f = 11 - Math.floor(j / i)
+        const k = j % i
+        const x = i - k - 1
+        const y = k
+        return fxy2nest(nside, f, x, y)
+    }
+}
 
 
 export function pix2vec_nest(nside: number, ipix: number) {
@@ -62,9 +103,9 @@ export function pix2vec_nest(nside: number, ipix: number) {
 }
 
 
-// export function pix2vec_ring(nside: number, ipix: number) {
-//     return pix2vec_nest(nside, ring2nest(nside, ipix))
-// }
+export function pix2vec_ring(nside: number, ipix: number) {
+    return pix2vec_nest(nside, ring2nest(nside, ipix))
+}
 
 
 // export function query_disc_nest(nside: number, v: V3) {
@@ -90,8 +131,9 @@ export function corners_nest(nside: number, ipix: number) {
 }
 
 
-// export function corners_ring(nside: number, ipix: number) {
-// }
+export function corners_ring(nside: number, ipix: number) {
+    return corners_nest(nside, ring2nest(nside, ipix))
+}
 
 
 // pixel area
@@ -109,7 +151,9 @@ export function nside2resol(nside: number) {
 function za2pix_nest(nside: number, z: number, a: number) {
     const { t, u } = za2tu(z, a)
     const { f, p, q } = tu2fpq(t, u)
-    return fpq2idx_nest(nside, f, p, q)
+    const x = Math.floor(nside * p)
+    const y = Math.floor(nside * q)
+    return fxy2nest(nside, f, x, y)
 }
 
 
@@ -210,11 +254,10 @@ function tu2fpq(t: number, u: number) {
 
 
 // f, p, q -> nest index
-function fpq2idx_nest(nside: number, f: number, p: number, q: number) {
-    const x = Math.floor(nside * p) // north east
-    const y = Math.floor(nside * q) // north west
+function fxy2nest(nside: number, f: number, x: number, y: number) {
     return f * nside * nside + bit_combine(x, y)
 }
+
 
 // x = (...x2 x1 x0)_2 <- in binary
 // y = (...y2 y1 y0)_2

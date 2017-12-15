@@ -21,9 +21,9 @@ def main():
     ang2pix_nest(testcase)
     ang2pix_ring(testcase)
     nest2ring(testcase)
-    # ring2nest(testcase)
+    ring2nest(testcase)
     pix2vec_nest(testcase)
-    # pix2vec_ring(testcase)
+    pix2vec_ring(testcase)
     nside2pixarea(testcase)
     nside2resol(testcase)
     corners_nest(testcase)
@@ -130,18 +130,18 @@ def pix2vec_ring(testcase):
     testcase['pix2vec_ring'] = cs
 
 
-# def ring2nest(testcase):
-#     cs = []
-#     for norder in range(16):
-#         nside = 1 << norder
-#         for i in range(1000):
-#             ipix = random.randrange(12 * nside * nside)
-#             args = (nside, ipix)
-#             cs.append(dict(
-#                 args=args,
-#                 expected=healpy.ring2nest(*args).tolist()
-#             ))
-#     testcase['ring2nest'] = cs
+def ring2nest(testcase):
+    cs = []
+    for norder in range(16):
+        nside = 1 << norder
+        for i in range(1000):
+            ipix = random.randrange(12 * nside * nside)
+            args = (nside, ipix)
+            cs.append(dict(
+                args=args,
+                expected=healpy.ring2nest(*args).tolist()
+            ))
+    testcase['ring2nest'] = cs
 
 
 def nside2pixarea(testcase):

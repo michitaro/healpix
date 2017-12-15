@@ -8,7 +8,7 @@
         "lib": [
             "es6"
         ],
-        "noUnusedLocals": true
+        "noUnusedLocals": false
     },
     "files": [
         "./src/index.ts"

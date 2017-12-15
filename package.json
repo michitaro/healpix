@@ -6,7 +6,7 @@
   "scripts": {
     "prepublish": "tsc",
     "test": "echo \"to test, do 'npm run my-test'\"",
-    "my-test": "python spec/testcase.py > spec/testcase.json && ts-node spec/test.ts"
+    "my-test": "python spec/generate-testcase.py > spec/testcase.json && ts-node spec/test.ts"
   },
   "keywords": [
     "healpix",

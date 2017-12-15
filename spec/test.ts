@@ -11,13 +11,13 @@ const testcase = require('../spec/testcase.json')
 function main() {
     for (const funcname in testcase) {
         for (const { args, expected } of testcase[funcname]) {
-            const result = healpix[funcname](...args)
             const pretty_args = args.map(JSON.stringify).join(', ')
-            const ok = equal(result, expected)
             console.log(`testing: ${funcname}(${pretty_args})...`)
+            const result = healpix[funcname](...args)
+            const ok = equal(result, expected)
             if (!ok) {
                 console.log(`${funcname}(${pretty_args}) => ${JSON.stringify(result, undefined, 2)}`)
-                console.log(`expected: ${JSON.stringify(expected, undefined, 2)})`)
+                console.log(`expected: ${JSON.stringify(expected, undefined, 2)}`)
                 throw new Error('test failed')
             }
         }
