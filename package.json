@@ -1,0 +1,24 @@
+{
+  "name": "@hscmap/healpix",
+  "version": "0.0.0",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "scripts": {
+    "prepublish": "tsc",
+    "my-test": "python spec/testcase.py > spec/testcase.json && ts-node spec/test.ts"
+  },
+  "keywords": [
+    "healpix",
+    "javascript",
+    "typescript"
+  ],
+  "author": "Koike Michitaro",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/lodash": "^4.14.89",
+    "lodash": "^4.17.4",
+    "ts-node": "^4.0.1",
+    "typescript": "^2.6.2"
+  },
+  "repository": "github:michitaro/healpix"
+}

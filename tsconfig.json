@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "outDir": "./lib",
+        "declaration": true,
+        "declarationDir": "./lib",
+        "target": "es5",
+        "lib": [
+            "es6"
+        ],
+        "noUnusedLocals": true
+    },
+    "files": [
+        "./src/index.ts"
+    ]
+}
