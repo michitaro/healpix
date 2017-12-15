@@ -13,8 +13,13 @@ function main() {
         for (const { args, expected } of testcase[funcname]) {
             const result = healpix[funcname](...args)
             const pretty_args = args.map(JSON.stringify).join(', ')
-            console.log(`${funcname}(${pretty_args}) => ${JSON.stringify(result)}  (expected: ${JSON.stringify(expected)})`)
-            console.assert(equal(result, expected))
+            const ok = equal(result, expected)
+            console.log(`testing: ${funcname}(${pretty_args})...`)
+            if (!ok) {
+                console.log(`${funcname}(${pretty_args}) => ${JSON.stringify(result, undefined, 2)}`)
+                console.log(`expected: ${JSON.stringify(expected, undefined, 2)})`)
+                throw new Error('test failed')
+            }
         }
     }
 }
@@ -38,7 +43,7 @@ function equal_number(a: number, b: number) {
         return a == b
     }
     else {
-        return Math.sign(a) == Math.sign(b) && Math.abs(a / b - 1) <= 1.e-9
+        return Math.abs((a - 1) / (b - 1) - 1) <= 1.e-9 || Math.abs((a + 1) / (b + 1) - 1) <= 1.e-9
     }
 }
 
