@@ -39,15 +39,13 @@ function draw(canvas: PerspectiveCanvas, theta: number, phi: number) {
 
 window.addEventListener('load', e => {
     const canvas = new PerspectiveCanvas(document.getElementById('main') as HTMLCanvasElement)
-    let theta = Math.PI / 2
-    let phi = 0
+    draw(canvas, 0, 0)
     window.addEventListener('mousemove', e => {
-        theta = Math.PI * e.clientY / window.innerHeight
-        phi = Math.PI * e.clientX / window.innerHeight
+        const theta = Math.PI * e.clientY / window.innerHeight
+        const phi = Math.PI * e.clientX / window.innerHeight
         draw(canvas, theta, phi)
     })
-}
-)
+})
 ```
 
 ## Install
