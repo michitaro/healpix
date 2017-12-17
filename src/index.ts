@@ -148,6 +148,20 @@ export function nside2resol(nside: number) {
 }
 
 
+export function pixcoord2vec_nest(nside: number, ipix: number, ne: number, nw: number) {
+    const { f, x, y } = nest2fxy(nside, ipix)
+    const { t, u } = fxy2tu(nside, f, x, y)
+    const d = PI_4 / nside
+    const { z, a } = tu2za(t + d * (ne - nw), u + d * (ne + nw - 1))
+    return za2vec(z, a)
+}
+
+
+export function pixcoord2vec_ring(nside: number, ipix: number, ne: number, nw: number) {
+    return pixcoord2vec_nest(nside, ring2nest(nside, ipix), ne, nw)
+}
+
+
 function za2pix_nest(nside: number, z: number, a: number) {
     const { t, u } = za2tu(z, a)
     const { f, p, q } = tu2fpq(t, u)
