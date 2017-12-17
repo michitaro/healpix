@@ -7,7 +7,7 @@
 
 ## Example (code of [the working demo](http://michitaro.github.io/healpix/example/dist/))
 ```typescript
-import * as healpix from '../../../src'
+import * as healpix from '@hscmap/healpix'
 import { PerspectiveCanvas } from "./perspective_canvas"
 
 
@@ -48,6 +48,11 @@ window.addEventListener('load', e => {
     })
 }
 )
+```
+
+## Install
+```sh
+npm install @hscmap/healpix
 ```
 
 ## Progress
