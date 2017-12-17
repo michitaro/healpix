@@ -2468,20 +2468,12 @@ module.exports = __webpack_require__(14);
 exports.__esModule = true;
 var healpix = __webpack_require__(6);
 var perspective_canvas_1 = __webpack_require__(7);
-window.addEventListener('load', function (e) {
-    var canvas = new perspective_canvas_1.PerspectiveCanvas(document.getElementById('main'));
-    var a = function () {
-        requestAnimationFrame(a);
-        draw(canvas);
-    };
-    a();
-});
-function draw(canvas) {
+function draw(canvas, theta, phi) {
     var nstep = 8;
     var nside = 4;
     var npix = 12 * nside * nside;
-    canvas.phi = performance.now() / 2000;
-    canvas.theta = 0.8;
+    canvas.phi = phi;
+    canvas.theta = theta;
     canvas.clear();
     var _loop_1 = function (ipix) {
         canvas.path(function (lineTo) {
@@ -2501,6 +2493,16 @@ function draw(canvas) {
         _loop_1(ipix);
     }
 }
+window.addEventListener('load', function (e) {
+    var canvas = new perspective_canvas_1.PerspectiveCanvas(document.getElementById('main'));
+    var theta = Math.PI / 2;
+    var phi = 0;
+    window.addEventListener('mousemove', function (e) {
+        theta = Math.PI * e.clientY / window.innerHeight;
+        phi = Math.PI * e.clientX / window.innerHeight;
+        draw(canvas, theta, phi);
+    });
+});
 
 
 /***/ }),
