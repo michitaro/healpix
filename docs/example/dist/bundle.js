@@ -2495,11 +2495,10 @@ function draw(canvas, theta, phi) {
 }
 window.addEventListener('load', function (e) {
     var canvas = new perspective_canvas_1.PerspectiveCanvas(document.getElementById('main'));
-    var theta = Math.PI / 2;
-    var phi = 0;
+    draw(canvas, 0, 0);
     window.addEventListener('mousemove', function (e) {
-        theta = Math.PI * e.clientY / window.innerHeight;
-        phi = Math.PI * e.clientX / window.innerHeight;
+        var theta = Math.PI * e.clientY / window.innerHeight;
+        var phi = Math.PI * e.clientX / window.innerHeight;
         draw(canvas, theta, phi);
     });
 });
