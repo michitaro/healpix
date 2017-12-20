@@ -5,6 +5,8 @@
 * Most API interfaces are ported from wonderful [healpy](https://healpy.readthedocs.io/en/latest/)
 * [Working demo](http://michitaro.github.io/healpix/)
 
+![Screenshot](./docs/images/pixcoord2vec.png)
+
 ## Example (code of [the working demo #1](http://michitaro.github.io/healpix/pixcoord2vec))
 ```typescript
 import * as healpix from '@hscmap/healpix'
