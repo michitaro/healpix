@@ -7,7 +7,7 @@
     "prepublish": "tsc",
     "test": "echo \"to test, do 'npm run my-test'\"",
     "my-test": "python spec/generate-testcase.py > spec/testcase.json && ts-node spec/test.ts",
-    "build-example": "cd docs/example && np install && npm run example"
+    "build-example": "cd docs/example && npm install && npm run build"
   },
   "keywords": [
     "healpix",

@@ -2,7 +2,8 @@
   "name": "example",
   "version": "1.0.0",
   "scripts": {
-    "example": "webpack-dev-server"
+    "build": "webpack",
+    "server": "webpack-dev-server"
   },
   "dependencies": {
     "@types/gl-matrix": "^2.4.0",
