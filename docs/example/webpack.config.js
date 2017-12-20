@@ -1,17 +1,28 @@
-module.exports = {
+const merge = require('webpack-merge')
+
+
+const index = {
+    entry: 'file-loader?name=index.html!./src/index.html',
+    output: { filename: 'dummy.js' }
+}
+
+
+const examples = ['pixcoord2vec', 'query_disc'].map(name => ({
     entry: [
-        './src/main.ts',
-        'file-loader?name=index.html!./src/index.html'
+        `./src/${name}/main.ts`,
+        `file-loader?name=${name}.html!./src/${name}/index.html`,
     ],
     output: {
-        path: `${__dirname}/dist`, filename: 'bundle.js',
+        filename: `${name}.js`,
     },
-    resolve: {
-        extensions: [".js", ".json", ".ts"]
-    },
-    module: {
-        rules: [
-            { test: /\.ts$/, loader: 'ts-loader' }
-        ]
-    }
+}))
+
+
+const base = {
+    output: { path: `${__dirname}/dist` },
+    resolve: { extensions: [".js", ".json", ".ts"] },
+    module: { rules: [{ test: /\.ts$/, loader: 'ts-loader' }] }
 }
+
+
+module.exports = [...examples, index].map(m => merge(base, m))

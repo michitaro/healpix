@@ -1,3 +1,5 @@
+import { ucs2 } from "punycode";
+
 // js implementation of healpix
 // http://iopscience.iop.org/article/10.1086/427976/pdf
 //
@@ -17,6 +19,16 @@
 
 
 export type V3 = [number, number, number]
+
+
+export function order2nside(order: number) {
+    return 1 << order
+}
+
+
+export function nside2npix(nside: number) {
+    return 12 * nside * nside
+}
 
 
 export function vec2pix_nest(nside: number, v: V3) {
@@ -108,9 +120,121 @@ export function pix2vec_ring(nside: number, ipix: number) {
 }
 
 
-// export function query_disc_nest(nside: number, v: V3) {
-//     const { z, a } = vec2za(v[0], v[1], v[2])
-// }
+// OPTIMIZE
+export function query_disc_inclusive_nest(nside: number, v: V3, radius: number, cb: (ipix_nest: number) => void) {
+    const r = radius
+    const { z: z0, a: a0 } = vec2za(v[0], v[1], v[2])
+    const sin_t = Math.sqrt(1 - z0 * z0)
+    const cos_r = Math.cos(r)
+    const sin_r = Math.sin(r)
+    const z1 = z0 * cos_r + sin_t * sin_r // cos(theta - r)
+    const z2 = z0 * cos_r - sin_t * sin_r // cos(theta + r)
+    const u1 = za2tu(z1, 0).u
+    const u2 = za2tu(z2, 0).u
+    const d = PI_4 / nside
+    const i1 = Math.floor((PI_2 - u1) / d)
+    const i2 = Math.floor((PI_2 - u2) / d + 1)
+    const pixrad = max_pixrad(nside)
+    for (let i = i1; i <= i2; ++i) {
+        const u = PI_4 * (2 - i / nside)
+        const z = tu2za(0, u).z
+        const w = clamp(r / Math.sqrt(1 - z * z), 0, PI)
+        const a1 = a0 - w
+        const a2 = a0 + w
+        ring_range_nest(nside, i, a1, a2, ipix => {
+            const vpix = pix2vec_nest(nside, ipix)
+            if (distance2(vpix, v) <= square(radius + pixrad))
+                cb(ipix)
+        })
+    }
+}
+
+
+export function max_pixrad(nside: number) {
+    const unit = PI_4 / nside
+    const d2 = distance2(
+        tu2vec(unit, nside * unit),
+        tu2vec(unit, (nside + 1) * unit),
+    )
+    return 2 * Math.asin(Math.sqrt(d2) / 2)
+}
+
+
+function tu2vec(t: number, u: number): V3 {
+    const { z, a } = tu2za(t, u)
+    return za2vec(z, a)
+}
+
+
+
+function distance2(a: V3, b: V3) {
+    const dx = a[0] - b[0]
+    const dy = a[1] - b[1]
+    const dz = a[2] - b[2]
+    return dx * dx + dy * dy + dz * dz
+}
+
+
+function ring_range_nest(nside: number, i: number, a1: number, a2: number, cb: (ipix_nest: number) => void) {
+    const u = PI_4 * (2 - i / nside)
+    const z = tu2za(0, u).z
+    const t1 = za2tu(z, wrap(a1, PI2)).t
+    const t2 = za2tu(z, wrap(a2, PI2)).t
+    let s = tu2fxy(nside, t1, u)
+    const end = tu2fxy(nside, t2, u)
+    const history: any[] = []
+    do {
+        history.push(s)
+        cb(fxy2nest(nside, s.f, s.x, s.y))
+        if (s.x == end.x && s.y == end.y && s.f == end.f)
+            break
+        if (s.f < 0 || s.f >= 12)
+            debugger
+        s = right_next_pixel(nside, s)
+    } while (true)
+}
+
+
+function right_next_pixel(nside: number, { f, x, y }: { f: number, x: number, y: number }) {
+    ++x
+    if (x == nside) {
+        switch (Math.floor(f / 4)) {
+            case 0:
+                f = (f + 1) % 4
+                x = y
+                y = nside
+                break
+            case 1:
+                f = f - 4
+                x = 0
+                break
+            case 2:
+                f = 4 + (f + 1) % 4
+                x = 0
+                break
+        }
+    }
+    --y
+    if (y == -1) {
+        switch (Math.floor(f / 4)) {
+            case 0:
+                f = 4 + (f + 1) % 4
+                y = nside - 1
+                break
+            case 1:
+                f = f + 4
+                y = nside - 1
+                break
+            case 2: {
+                f = 8 + (f + 1) % 4
+                y = x - 1
+                x = 0
+                break
+            }
+        }
+    }
+    return { f, x, y }
+}
 
 
 export function corners_nest(nside: number, ipix: number) {
@@ -164,10 +288,21 @@ export function pixcoord2vec_ring(nside: number, ipix: number, ne: number, nw: n
 
 function za2pix_nest(nside: number, z: number, a: number) {
     const { t, u } = za2tu(z, a)
-    const { f, p, q } = tu2fpq(t, u)
-    const x = Math.floor(nside * p)
-    const y = Math.floor(nside * q)
+    const { f, x, y } = tu2fxy(nside, t, u)
     return fxy2nest(nside, f, x, y)
+}
+
+
+function tu2fxy(nside: number, t: number, u: number) {
+    const { f, p, q } = tu2fpq(t, u)
+    const x = clamp(Math.floor(nside * p), 0, nside - 1)
+    const y = clamp(Math.floor(nside * q), 0, nside - 1)
+    return { x, f, y }
+}
+
+
+function wrap(x: number, p: number) {
+    return x < 0 ? p - (-x % p) : x % p
 }
 
 
@@ -245,6 +380,18 @@ function za2vec(z: number, a: number): V3 {
 }
 
 
+export function ang2vec(theta: number, phi: number) {
+    const z = Math.cos(theta)
+    return za2vec(z, phi)
+}
+
+
+export function vec2ang(v: V3) {
+    const { z, a } = vec2za(v[0], v[1], v[2])
+    return { theta: Math.acos(z), phi: a }
+}
+
+
 // sphirical projection -> f, p, q
 // f: base pixel index
 // p: coord in north east axis of base pixel
@@ -252,13 +399,17 @@ function za2vec(z: number, a: number): V3 {
 function tu2fpq(t: number, u: number) {
     t /= PI_4
     u /= PI_4
+    t = wrap(t, 8)
     t += -4
     u += 5
-    const pp = (u + t) / 2
-    const qq = (u - t) / 2
+    const pp = clamp((u + t) / 2, 0, 5)
     const PP = Math.floor(pp)
+    const qq = clamp((u - t) / 2, 3 - PP, 6 - PP)
     const QQ = Math.floor(qq)
     const V = 5 - (PP + QQ)
+    if (V < 0) { // clamp
+        return { f: 0, p: 1, q: 1 }
+    }
     const H = PP - QQ + 4
     const f = 4 * V + (H >> 1) % 4
     const p = pp % 1
@@ -268,7 +419,7 @@ function tu2fpq(t: number, u: number) {
 
 
 // f, p, q -> nest index
-function fxy2nest(nside: number, f: number, x: number, y: number) {
+export function fxy2nest(nside: number, f: number, x: number, y: number) {
     return f * nside * nside + bit_combine(x, y)
 }
 
@@ -330,32 +481,6 @@ function nest2fxy(nside: number, ipix: number) {
 }
 
 
-// function fxy2ij(nside: number, f: number, x: number, y: number) {
-//     const f_row = Math.floor(f / 4) // {0 .. 2}
-//     const f1 = f_row + 2            // {2 .. 4}
-//     const v = x + y
-//     const i = f1 * nside - v - 1
-//     if (i < nside) { // north polar cap
-//         const f_col = f % 4
-//         const j = (i * f_col) + nside - y
-//         return { i, j }
-//     }
-//     if (i < 3 * nside) { // equatorial belt
-//         const h = x - y
-//         const f2 = 2 * (f % 4) - (f_row % 2) + 1  // {0 .. 7}
-//         const k = (f2 * nside + h + (8 * nside)) % (8 * nside)
-//         const j = (k >> 1) + 1
-//         return { i, j }
-//     }
-//     else { // south polar cap
-//         const i_i = 4 * nside - i
-//         const i_f_col = 3 - (f % 4)
-//         const j = 4 * i_i - (i_i * i_f_col) - y
-//         return { i, j }
-//     }
-// }
-
-
 function fxy2ring(nside: number, f: number, x: number, y: number) {
     const f_row = Math.floor(f / 4) // {0 .. 2}
     const f1 = f_row + 2            // {2 .. 4}
@@ -408,6 +533,11 @@ const sign: (x: number) => number = (<any>Math).sign || function (x: number) {
 
 function square(x: number) {
     return x * x
+}
+
+
+function clamp(x: number, a: number, b: number) {
+    return x < a ? a : (x > b ? b : x)
 }
 
 

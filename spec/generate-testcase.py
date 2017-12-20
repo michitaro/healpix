@@ -26,6 +26,7 @@ def main():
     pix2vec_ring(testcase)
     nside2pixarea(testcase)
     nside2resol(testcase)
+    max_pixrad(testcase)
     corners_nest(testcase)
     corners_ring(testcase)
 
@@ -166,6 +167,18 @@ def nside2resol(testcase):
             expected=healpy.nside2resol(*args)
         ))
     testcase['nside2resol'] = cs
+
+
+def max_pixrad(testcase):
+    cs = []
+    for norder in range(16):
+        nside = 1 << norder
+        args = (nside,)
+        cs.append(dict(
+            args=args,
+            expected=healpy.max_pixrad(*args)
+        ))
+    testcase['max_pixrad'] = cs
 
 
 def corners_nest(testcase):

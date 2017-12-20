@@ -1,4 +1,4 @@
-import * as healpix from '../../../src'
+import * as healpix from '../../../../src'
 import { PerspectiveCanvas } from "./perspective_canvas"
 
 
@@ -29,7 +29,7 @@ function draw(canvas: PerspectiveCanvas, theta: number, phi: number) {
 
 
 window.addEventListener('load', e => {
-    const canvas = new PerspectiveCanvas(document.getElementById('main') as HTMLCanvasElement)
+    const canvas = new PerspectiveCanvas(setupCanvas(document.getElementById('main') as HTMLCanvasElement))
     draw(canvas, 0, 0)
     window.addEventListener('mousemove', e => {
         const theta = Math.PI * e.clientY / window.innerHeight
@@ -37,3 +37,11 @@ window.addEventListener('load', e => {
         draw(canvas, theta, phi)
     })
 })
+
+
+function setupCanvas(canvas: HTMLCanvasElement) {
+    const { width, height } = canvas.getBoundingClientRect()
+    canvas.width = width * devicePixelRatio
+    canvas.height = height * devicePixelRatio
+    return canvas
+}

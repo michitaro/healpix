@@ -2,10 +2,10 @@
 
 ## Introduction
 * This module is an implementation of [HEALPix](http://healpix.sourceforge.net) in JavaScript / TypeScript.
-* Most API interfaces are ported from [healpy](https://healpy.readthedocs.io/en/latest/)
+* Most API interfaces are ported from wonderful [healpy](https://healpy.readthedocs.io/en/latest/)
 * [Working demo](http://michitaro.github.io/healpix/example/dist/)
 
-## Example (code of [the working demo](http://michitaro.github.io/healpix/example/dist/))
+## Example (code of [the working demo (pixcoord2vec)](http://michitaro.github.io/healpix/example/dist/))
 ```typescript
 import * as healpix from '@hscmap/healpix'
 import { PerspectiveCanvas } from "./perspective_canvas"
@@ -64,7 +64,7 @@ npm install @hscmap/healpix
 |ang2pix_ring       |😀|
 |pix2vec_nest       |😀|
 |pix2vec_ring       |😀|
-|query_disc_nest    ||
+|query_disc_nest    |😓|
 |query_disc_ring    ||
 |corners_nest       |😀|
 |corners_ring       |😀|
