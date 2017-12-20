@@ -3,9 +3,9 @@
 ## Introduction
 * This module is an implementation of [HEALPix](http://healpix.sourceforge.net) in JavaScript / TypeScript.
 * Most API interfaces are ported from wonderful [healpy](https://healpy.readthedocs.io/en/latest/)
-* [Working demo](http://michitaro.github.io/healpix/example/dist/)
+* [Working demo](http://michitaro.github.io/healpix/)
 
-## Example (code of [the working demo (pixcoord2vec)](http://michitaro.github.io/healpix/example/dist/))
+## Example (code of [the working demo (pixcoord2vec)](http://michitaro.github.io/healpix/pixcoord2vec))
 ```typescript
 import * as healpix from '@hscmap/healpix'
 import { PerspectiveCanvas } from "./perspective_canvas"
