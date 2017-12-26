@@ -1,5 +1,3 @@
-import { ucs2 } from "punycode";
-
 // js implementation of healpix
 // http://iopscience.iop.org/article/10.1086/427976/pdf
 //
@@ -122,31 +120,48 @@ export function pix2vec_ring(nside: number, ipix: number) {
 
 // OPTIMIZE
 export function query_disc_inclusive_nest(nside: number, v: V3, radius: number, cb: (ipix_nest: number) => void) {
-    const r = radius
-    const { z: z0, a: a0 } = vec2za(v[0], v[1], v[2])
+    if (radius >= PI) {
+        throw new Error(`radius must < PI`)
+    }
+    const pixrad = max_pixrad(nside)
+    const d = PI_4 / nside
+    const { z: z0, a: a0 } = vec2za(v[0], v[1], v[2]) // z0 = cos(theta)
     const sin_t = Math.sqrt(1 - z0 * z0)
-    const cos_r = Math.cos(r)
-    const sin_r = Math.sin(r)
+    const cos_r = Math.cos(radius) // r := radius
+    const sin_r = Math.sin(radius)
     const z1 = z0 * cos_r + sin_t * sin_r // cos(theta - r)
     const z2 = z0 * cos_r - sin_t * sin_r // cos(theta + r)
     const u1 = za2tu(z1, 0).u
     const u2 = za2tu(z2, 0).u
-    const d = PI_4 / nside
-    const i1 = Math.floor((PI_2 - u1) / d)
-    const i2 = Math.floor((PI_2 - u2) / d + 1)
-    const pixrad = max_pixrad(nside)
-    for (let i = i1; i <= i2; ++i) {
-        const u = PI_4 * (2 - i / nside)
-        const z = tu2za(0, u).z
-        const w = clamp(r / Math.sqrt(1 - z * z), 0, PI)
-        const a1 = a0 - w
-        const a2 = a0 + w
-        ring_range_nest(nside, i, a1, a2, ipix => {
-            const vpix = pix2vec_nest(nside, ipix)
-            if (distance2(vpix, v) <= square(radius + pixrad))
+    const cover_north_pole = sin_t * cos_r - z0 * sin_r < 0 // sin(theta - r) < 0
+    const cover_south_pole = sin_t * cos_r + z0 * sin_r < 0 // sin(theta - r) < 0
+    let i1 = Math.floor((PI_2 - u1) / d)
+    let i2 = Math.floor((PI_2 - u2) / d + 1)
+    if (cover_north_pole) {
+        ++i1
+        for (let i = 1; i <= i1; ++i)
+            walk_ring(nside, i, cb)
+        ++i1
+    }
+    if (i1 == 0) {
+        walk_ring(nside, 1, cb)
+        i1 = 2
+    }
+    if (cover_south_pole) {
+        --i2
+        for (let i = i2; i <= 4 * nside - 1; ++i)
+            walk_ring(nside, i, cb)
+        --i2
+    }
+    if (i2 == 4 * nside) {
+        walk_ring(nside, 4 * nside - 1, cb)
+        i2 = 4 * nside - 2
+    }
+    for (let i = i1; i <= i2; ++i)
+        walk_ring_around(nside, i, a0, radius, ipix => {
+            if (distance2(pix2vec_nest(nside, ipix), v) <= square(radius + pixrad))
                 cb(ipix)
         })
-    }
 }
 
 
@@ -166,7 +181,6 @@ function tu2vec(t: number, u: number): V3 {
 }
 
 
-
 function distance2(a: V3, b: V3) {
     const dx = a[0] - b[0]
     const dy = a[1] - b[1]
@@ -175,27 +189,60 @@ function distance2(a: V3, b: V3) {
 }
 
 
-function ring_range_nest(nside: number, i: number, a1: number, a2: number, cb: (ipix_nest: number) => void) {
+type FXY = { f: number, x: number, y: number }
+
+
+// function walk_ring_range(nside: number, i: number, a1: number, a2: number, cb: (ipix: number) => void) {
+//     const u = PI_4 * (2 - i / nside)
+//     const z = tu2za(0, u).z
+//     const t1 = za2tu(z, wrap(a1, PI2)).t
+//     const t2 = za2tu(z, wrap(a2, PI2)).t
+//     let s = tu2fxy(nside, t1, u)
+//     const end = a2 > a1 + PI2 ? s : tu2fxy(nside, t2, u)
+//     const loop = a2 > a1 + PI && fxy_compare(s, end) ? 1 : 0
+//     let loopCount = 0
+//     while (!(fxy_compare(s, end) && loopCount++ >= loop)) {
+//         cb(fxy2nest(nside, s.f, s.x, s.y))
+//         s = right_next_pixel(nside, s)
+//     }
+// }
+
+
+function walk_ring_around(nside: number, i: number, a0: number, delta_a: number, cb: (ipix: number) => void) {
     const u = PI_4 * (2 - i / nside)
-    const z = tu2za(0, u).z
-    const t1 = za2tu(z, wrap(a1, PI2)).t
-    const t2 = za2tu(z, wrap(a2, PI2)).t
-    let s = tu2fxy(nside, t1, u)
-    const end = tu2fxy(nside, t2, u)
-    const history: any[] = []
-    do {
-        history.push(s)
+    const z = tu2za(PI_4, u).z
+    const w = delta_a / Math.sqrt(1 - z * z)
+    if (w >= 3 * PI_4)
+        return walk_ring(nside, i, cb)
+    const t1 = za2tu(z, wrap(a0 - w, PI2)).t
+    const t2 = za2tu(z, wrap(a0 + w, PI2)).t
+    const begin = tu2fxy(nside, t1, u)
+    const end = right_next_pixel(nside, tu2fxy(nside, t2, u))
+    let s = begin
+    for (let s = begin; !fxy_compare(s, end); s = right_next_pixel(nside, s)) {
         cb(fxy2nest(nside, s.f, s.x, s.y))
-        if (s.x == end.x && s.y == end.y && s.f == end.f)
-            break
-        if (s.f < 0 || s.f >= 12)
-            debugger
-        s = right_next_pixel(nside, s)
-    } while (true)
+    }
 }
 
 
-function right_next_pixel(nside: number, { f, x, y }: { f: number, x: number, y: number }) {
+function walk_ring(nside: number, i: number, cb: (ipix: number) => void) {
+    const u = PI_4 * (2 - i / nside)
+    const t = PI_4 * (1 + (1 - i % 2) / nside)
+    const begin = tu2fxy(nside, t, u)
+    let s = begin
+    do {
+        cb(fxy2nest(nside, s.f, s.x, s.y))
+        s = right_next_pixel(nside, s)
+    } while (!fxy_compare(s, begin))
+}
+
+
+function fxy_compare(a: FXY, b: FXY) {
+    return a.x == b.x && a.y == b.y && a.f == b.f
+}
+
+
+function right_next_pixel(nside: number, { f, x, y }: FXY) {
     ++x
     if (x == nside) {
         switch (Math.floor(f / 4)) {
