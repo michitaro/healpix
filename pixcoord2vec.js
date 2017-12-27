@@ -2516,6 +2516,22 @@ function setupCanvas(canvas) {
 
 "use strict";
 
+// js implementation of healpix
+// http://iopscience.iop.org/article/10.1086/427976/pdf
+//
+// notations
+// ---------
+// theta :  colatitude (pi/2 - delta)                [0 , pi]
+// phi   :  longitutde (alpha)                       [0, 2 pi)
+// t     :  coord. of x-axis in sphirical projection [0, 2 pi)
+// u     :  coord. of y-axis in sphirical projection [-1/2, 1/2]
+// z     :  cos(theta)                               [-1, 1]
+// a     :  phi                                      [0, 2 pi)
+// f     :  base pixel index                         {0 .. 11}
+// p     :  north-east axis in base pixel            [0, 1)
+// q     :  north-west axis in base pixel            [0, 1)
+// i     :  ring index                               {1 .. 4 nside - 1}
+// j     :  pixel-in-ring index                      polar cap: {1 .. 4 i} ; equatorial belt: {1 .. 4 nside}
 Object.defineProperty(exports, "__esModule", { value: true });
 function order2nside(order) {
     return 1 << order;
@@ -2606,35 +2622,58 @@ function pix2vec_ring(nside, ipix) {
     return pix2vec_nest(nside, ring2nest(nside, ipix));
 }
 exports.pix2vec_ring = pix2vec_ring;
-// OPTIMIZE
+// TODO: cleanup
 function query_disc_inclusive_nest(nside, v, radius, cb) {
-    var r = radius;
-    var _a = vec2za(v[0], v[1], v[2]), z0 = _a.z, a0 = _a.a;
+    if (radius > PI_2) {
+        throw new Error("query_disc: radius must < PI/2");
+    }
+    var pixrad = max_pixrad(nside);
+    var d = PI_4 / nside;
+    var _a = vec2za(v[0], v[1], v[2]), z0 = _a.z, a0 = _a.a; // z0 = cos(theta)
     var sin_t = Math.sqrt(1 - z0 * z0);
-    var cos_r = Math.cos(r);
-    var sin_r = Math.sin(r);
+    var cos_r = Math.cos(radius); // r := radius
+    var sin_r = Math.sin(radius);
     var z1 = z0 * cos_r + sin_t * sin_r; // cos(theta - r)
     var z2 = z0 * cos_r - sin_t * sin_r; // cos(theta + r)
     var u1 = za2tu(z1, 0).u;
     var u2 = za2tu(z2, 0).u;
-    var d = PI_4 / nside;
+    var cover_north_pole = sin_t * cos_r - z0 * sin_r < 0; // sin(theta - r) < 0
+    var cover_south_pole = sin_t * cos_r + z0 * sin_r < 0; // sin(theta - r) < 0
     var i1 = Math.floor((PI_2 - u1) / d);
     var i2 = Math.floor((PI_2 - u2) / d + 1);
-    var pixrad = max_pixrad(nside);
-    for (var i = i1; i <= i2; ++i) {
-        var u = PI_4 * (2 - i / nside);
-        var z = tu2za(0, u).z;
-        var w = clamp(r / Math.sqrt(1 - z * z), 0, PI);
-        var a1 = a0 - w;
-        var a2 = a0 + w;
-        ring_range_nest(nside, i, a1, a2, function (ipix) {
-            var vpix = pix2vec_nest(nside, ipix);
-            if (distance2(vpix, v) <= square(radius + pixrad))
+    if (cover_north_pole) {
+        ++i1;
+        for (var i = 1; i <= i1; ++i)
+            walk_ring(nside, i, cb);
+        ++i1;
+    }
+    if (i1 == 0) {
+        walk_ring(nside, 1, cb);
+        i1 = 2;
+    }
+    if (cover_south_pole) {
+        --i2;
+        for (var i = i2; i <= 4 * nside - 1; ++i)
+            walk_ring(nside, i, cb);
+        --i2;
+    }
+    if (i2 == 4 * nside) {
+        walk_ring(nside, 4 * nside - 1, cb);
+        i2 = 4 * nside - 2;
+    }
+    for (var i = i1; i <= i2; ++i)
+        walk_ring_around(nside, i, a0, radius, function (ipix) {
+            if (distance2(pix2vec_nest(nside, ipix), v) <= square(radius + pixrad))
                 cb(ipix);
         });
-    }
 }
 exports.query_disc_inclusive_nest = query_disc_inclusive_nest;
+function query_disc_inclusive_ring(nside, v, radius, cb_ring) {
+    return query_disc_inclusive_nest(nside, v, radius, function (ipix) {
+        cb_ring(nest2ring(nside, ipix));
+    });
+}
+exports.query_disc_inclusive_ring = query_disc_inclusive_ring;
 function max_pixrad(nside) {
     var unit = PI_4 / nside;
     var d2 = distance2(tu2vec(unit, nside * unit), tu2vec(unit, (nside + 1) * unit));
@@ -2651,23 +2690,54 @@ function distance2(a, b) {
     var dz = a[2] - b[2];
     return dx * dx + dy * dy + dz * dz;
 }
-function ring_range_nest(nside, i, a1, a2, cb) {
+// function walk_ring_range(nside: number, i: number, a1: number, a2: number, cb: (ipix: number) => void) {
+//     const u = PI_4 * (2 - i / nside)
+//     const z = tu2za(0, u).z
+//     const t1 = za2tu(z, wrap(a1, PI2)).t
+//     const t2 = za2tu(z, wrap(a2, PI2)).t
+//     let s = tu2fxy(nside, t1, u)
+//     const end = a2 > a1 + PI2 ? s : tu2fxy(nside, t2, u)
+//     const loop = a2 > a1 + PI && fxy_compare(s, end) ? 1 : 0
+//     let loopCount = 0
+//     while (!(fxy_compare(s, end) && loopCount++ >= loop)) {
+//         cb(fxy2nest(nside, s.f, s.x, s.y))
+//         s = right_next_pixel(nside, s)
+//     }
+// }
+function walk_ring_around(nside, i, a0, delta_a, cb) {
     var u = PI_4 * (2 - i / nside);
-    var z = tu2za(0, u).z;
-    var t1 = za2tu(z, wrap(a1, PI2)).t;
-    var t2 = za2tu(z, wrap(a2, PI2)).t;
-    var s = tu2fxy(nside, t1, u);
-    var end = tu2fxy(nside, t2, u);
-    var history = [];
+    var z = tu2za(PI_4, u).z;
+    var w = delta_a / Math.sqrt(1 - z * z);
+    if (w >= 3 * PI_4)
+        return walk_ring(nside, i, cb);
+    var t1 = center_t(nside, i, za2tu(z, wrap(a0 - w, PI2)).t);
+    var t2 = center_t(nside, i, za2tu(z, wrap(a0 + w, PI2)).t);
+    var begin = tu2fxy(nside, t1, u);
+    var end = right_next_pixel(nside, tu2fxy(nside, t2, u));
+    var s = begin;
+    for (var s_1 = begin; !fxy_compare(s_1, end); s_1 = right_next_pixel(nside, s_1)) {
+        cb(fxy2nest(nside, s_1.f, s_1.x, s_1.y));
+    }
+}
+function center_t(nside, i, t) {
+    var d = PI_4 / nside;
+    t /= d;
+    t = (((t + i % 2) >> 1) << 1) + 1 - i % 2;
+    t *= d;
+    return t;
+}
+function walk_ring(nside, i, cb) {
+    var u = PI_4 * (2 - i / nside);
+    var t = PI_4 * (1 + (1 - i % 2) / nside);
+    var begin = tu2fxy(nside, t, u);
+    var s = begin;
     do {
-        history.push(s);
         cb(fxy2nest(nside, s.f, s.x, s.y));
-        if (s.x == end.x && s.y == end.y && s.f == end.f)
-            break;
-        if (s.f < 0 || s.f >= 12)
-            debugger;
         s = right_next_pixel(nside, s);
-    } while (true);
+    } while (!fxy_compare(s, begin));
+}
+function fxy_compare(a, b) {
+    return a.x == b.x && a.y == b.y && a.f == b.f;
 }
 function right_next_pixel(nside, _a) {
     var f = _a.f, x = _a.x, y = _a.y;
@@ -2973,7 +3043,7 @@ function clamp(x, a, b) {
 function assert(condition) {
     console.assert(condition);
     if (!condition) {
-        throw new Error('assertion error');
+        debugger;
     }
 }
 
