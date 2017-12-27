@@ -2,6 +2,11 @@
     "compilerOptions": {
         "strict": true,
         "noUnusedLocals": false,
-        "target": "es5"
+        "target": "es5",
+        "lib": [
+            "dom",
+            "es2015",
+            "es2015.collection"
+        ]
     }
 }

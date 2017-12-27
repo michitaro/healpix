@@ -2,8 +2,8 @@ import * as healpix from '../../../../src'
 import { SimpleCanvas } from "./simple_canvas"
 
 const PI = Math.PI
-const nside = 32
-const radius = 0.4
+const nside = 64
+const radius = Math.PI / 8
 
 
 window.addEventListener('load', e => {
@@ -52,7 +52,7 @@ function fillPixel(canvas: SimpleCanvas, nside: number, ipix: number) {
 }
 
 
-function pixelPath(canvas: SimpleCanvas, nside: number, ipix: number, nstep = 8) {
+function pixelPath(canvas: SimpleCanvas, nside: number, ipix: number, nstep = 4) {
     const v0 = healpix.pixcoord2vec_nest(nside, ipix, 0, 0)
     const phi0 = Math.atan2(v0[1], v0[0])
 

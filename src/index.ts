@@ -118,10 +118,10 @@ export function pix2vec_ring(nside: number, ipix: number) {
 }
 
 
-// OPTIMIZE
-export function query_disc_inclusive_nest(nside: number, v: V3, radius: number, cb: (ipix_nest: number) => void) {
-    if (radius >= PI) {
-        throw new Error(`radius must < PI`)
+// TODO: cleanup
+export function query_disc_inclusive_nest(nside: number, v: V3, radius: number, cb: (ipix: number) => void) {
+    if (radius > PI_2) {
+        throw new Error(`query_disc: radius must < PI/2`)
     }
     const pixrad = max_pixrad(nside)
     const d = PI_4 / nside
@@ -164,6 +164,12 @@ export function query_disc_inclusive_nest(nside: number, v: V3, radius: number, 
         })
 }
 
+
+export function query_disc_inclusive_ring(nside: number, v: V3, radius: number, cb_ring: (ipix: number) => void) {
+    return query_disc_inclusive_nest(nside, v, radius, ipix => {
+        cb_ring(nest2ring(nside, ipix))
+    })
+}
 
 export function max_pixrad(nside: number) {
     const unit = PI_4 / nside
@@ -214,14 +220,23 @@ function walk_ring_around(nside: number, i: number, a0: number, delta_a: number,
     const w = delta_a / Math.sqrt(1 - z * z)
     if (w >= 3 * PI_4)
         return walk_ring(nside, i, cb)
-    const t1 = za2tu(z, wrap(a0 - w, PI2)).t
-    const t2 = za2tu(z, wrap(a0 + w, PI2)).t
+    const t1 = center_t(nside, i, za2tu(z, wrap(a0 - w, PI2)).t)
+    const t2 = center_t(nside, i, za2tu(z, wrap(a0 + w, PI2)).t)
     const begin = tu2fxy(nside, t1, u)
     const end = right_next_pixel(nside, tu2fxy(nside, t2, u))
     let s = begin
     for (let s = begin; !fxy_compare(s, end); s = right_next_pixel(nside, s)) {
         cb(fxy2nest(nside, s.f, s.x, s.y))
     }
+}
+
+
+function center_t(nside: number, i: number, t: number) {
+    const d = PI_4 / nside
+    t /= d
+    t = (((t + i % 2) >> 1) << 1) + 1 - i % 2
+    t *= d
+    return t
 }
 
 
@@ -591,6 +606,6 @@ function clamp(x: number, a: number, b: number) {
 function assert(condition: boolean) {
     console.assert(condition)
     if (!condition) {
-        throw new Error('assertion error')
+        debugger
     }
 }
