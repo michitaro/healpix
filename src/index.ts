@@ -588,6 +588,27 @@ function fxy2tu(nside: number, f: number, x: number, y: number) {
 }
 
 
+export type HealpixId = number
+
+
+export function encode_id(order: number, index: number): HealpixId {
+    return 4 * ((1 << (2 * order)) - 1) + index
+}
+
+
+export function decode_id(id: HealpixId) {
+    assert(id <= 0x7fffffff)
+    let order = 0
+    let l = (id >> 2) + 1
+    while (l >= 4) {
+        l >>= 2
+        ++order
+    }
+    const index = id - (((1 << (2 * order)) - 1) << 2)
+    return { order, index }
+}
+
+
 const sign: (x: number) => number = (<any>Math).sign || function (x: number) {
     return x > 0 ? 1 : (x < 0 ? -1 : 0)
 }
@@ -607,5 +628,4 @@ function assert(condition: boolean) {
     console.assert(condition)
     if (!condition) {
         debugger
-    }
-}
+    }}

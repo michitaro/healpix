@@ -34,6 +34,10 @@ function equal(a: any, b: any): boolean {
     if (Array.isArray(a) && Array.isArray(a)) {
         return _.zip(a, b).every(([ca, cb]) => equal(ca, cb))
     }
+    if (typeof (a) == 'object' && typeof (b) == 'object') {
+        const a_keys = Object.keys(a)
+        return a_keys.length == Object.keys(b).length && a_keys.every(k => equal(a[k], b[k]))
+    }
     throw new Error, `unknwon type: ${a} and ${b}`
 }
 

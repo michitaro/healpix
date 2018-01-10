@@ -29,7 +29,8 @@ def main():
     max_pixrad(testcase)
     corners_nest(testcase)
     corners_ring(testcase)
-
+    encode_id(testcase)
+    decode_id(testcase)
     json.dump(testcase, args.out, indent=2)
 
 
@@ -207,6 +208,39 @@ def corners_ring(testcase):
                 expected=healpy.boundaries(*args).T.tolist()
             ))
     testcase['corners_ring'] = cs
+
+
+def encode_id_python(order, index):
+    return 4 * ((1 << (2 * order)) - 1) + index
+
+
+def encode_id(testcase):
+    cs = []
+    for norder in range(16):
+        nside = 1 << norder
+        for i in range(1000):
+            ipix = random.randrange(12 * nside * nside)
+            args = (norder, ipix)
+            cs.append(dict(
+                args=args,
+                expected=encode_id_python(*args)
+            ))
+    testcase['encode_id'] = cs
+
+
+def decode_id(testcase):
+    cs = []
+    for norder in range(14):
+        nside = 1 << norder
+        for i in range(1000):
+            ipix = random.randrange(12 * nside * nside)
+            uid = encode_id_python(norder, ipix)
+            cs.append(dict(
+                args=(uid,),
+                expected={'order': norder, 'index': ipix}
+            ))
+    testcase['decode_id'] = cs
+    return
 
 
 def random_vec():
