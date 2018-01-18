@@ -481,7 +481,7 @@ function tu2fpq(t: number, u: number) {
 
 
 // f, p, q -> nest index
-export function fxy2nest(nside: number, f: number, x: number, y: number) {
+function fxy2nest(nside: number, f: number, x: number, y: number) {
     return f * nside * nside + bit_combine(x, y)
 }
 
