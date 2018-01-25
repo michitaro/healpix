@@ -598,7 +598,6 @@ function tu2fpq(t, u) {
 function fxy2nest(nside, f, x, y) {
     return f * nside * nside + bit_combine(x, y);
 }
-exports.fxy2nest = fxy2nest;
 // x = (...x2 x1 x0)_2 <- in binary
 // y = (...y2 y1 y0)_2
 // p = (...y2 x2 y1 x1 y0 x0)_2
@@ -691,6 +690,22 @@ function fxy2tu(nside, f, x, y) {
     var u = PI_2 - i / nside * PI_4;
     return { t: t, u: u };
 }
+function encode_id(order, index) {
+    return 4 * ((1 << (2 * order)) - 1) + index;
+}
+exports.encode_id = encode_id;
+function decode_id(id) {
+    assert(id <= 0x7fffffff);
+    var order = 0;
+    var l = (id >> 2) + 1;
+    while (l >= 4) {
+        l >>= 2;
+        ++order;
+    }
+    var index = id - (((1 << (2 * order)) - 1) << 2);
+    return { order: order, index: index };
+}
+exports.decode_id = decode_id;
 var sign = Math.sign || function (x) {
     return x > 0 ? 1 : (x < 0 ? -1 : 0);
 };
