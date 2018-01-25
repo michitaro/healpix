@@ -534,7 +534,7 @@ export function bit_decombine(p: number) {
 // f: base pixel index
 // x: north east index in base pixel
 // y: north west index in base pixel
-export function nest2fxy(nside: number, ipix: number) {
+function nest2fxy(nside: number, ipix: number) {
     const nside2 = nside * nside
     const f = Math.floor(ipix / nside2) // base pixel index
     const k = ipix % nside2             // nested pixel index in base pixel
@@ -574,7 +574,7 @@ function fxy2ring(nside: number, f: number, x: number, y: number) {
 
 
 // f, x, y -> sphirical projection
-export function fxy2tu(nside: number, f: number, x: number, y: number) {
+function fxy2tu(nside: number, f: number, x: number, y: number) {
     const f_row = Math.floor(f / 4)
     const f1 = f_row + 2
     const f2 = 2 * (f % 4) - (f_row % 2) + 1
