@@ -157,9 +157,10 @@ export function query_disc_inclusive_nest(nside: number, v: V3, radius: number, 
         walk_ring(nside, 4 * nside - 1, cb)
         i2 = 4 * nside - 2
     }
+    const theta = Math.acos(z0)
     for (let i = i1; i <= i2; ++i)
-        walk_ring_around(nside, i, a0, radius, ipix => {
-            if (distance2(pix2vec_nest(nside, ipix), v) <= square(radius + pixrad))
+        walk_ring_around(nside, i, a0, theta, radius + pixrad, ipix => {
+            if (angle(pix2vec_nest(nside, ipix), v) <= radius + pixrad)
                 cb(ipix)
         })
 }
@@ -173,11 +174,15 @@ export function query_disc_inclusive_ring(nside: number, v: V3, radius: number, 
 
 export function max_pixrad(nside: number) {
     const unit = PI_4 / nside
-    const d2 = distance2(
+    return angle(
         tu2vec(unit, nside * unit),
         tu2vec(unit, (nside + 1) * unit),
     )
-    return 2 * Math.asin(Math.sqrt(d2) / 2)
+}
+
+
+function angle(a: V3, b: V3) {
+    return 2 * Math.asin(Math.sqrt(distance2(a, b)) / 2)
 }
 
 
@@ -198,33 +203,25 @@ function distance2(a: V3, b: V3) {
 type FXY = { f: number, x: number, y: number }
 
 
-// function walk_ring_range(nside: number, i: number, a1: number, a2: number, cb: (ipix: number) => void) {
-//     const u = PI_4 * (2 - i / nside)
-//     const z = tu2za(0, u).z
-//     const t1 = za2tu(z, wrap(a1, PI2)).t
-//     const t2 = za2tu(z, wrap(a2, PI2)).t
-//     let s = tu2fxy(nside, t1, u)
-//     const end = a2 > a1 + PI2 ? s : tu2fxy(nside, t2, u)
-//     const loop = a2 > a1 + PI && fxy_compare(s, end) ? 1 : 0
-//     let loopCount = 0
-//     while (!(fxy_compare(s, end) && loopCount++ >= loop)) {
-//         cb(fxy2nest(nside, s.f, s.x, s.y))
-//         s = right_next_pixel(nside, s)
-//     }
-// }
-
-
-function walk_ring_around(nside: number, i: number, a0: number, delta_a: number, cb: (ipix: number) => void) {
+function walk_ring_around(nside: number, i: number, a0: number, theta: number, r: number, cb: (ipix: number) => void) {
+    if (theta < r || theta + r > PI)
+        return walk_ring(nside, i, cb)
     const u = PI_4 * (2 - i / nside)
     const z = tu2za(PI_4, u).z
-    const w = delta_a / Math.sqrt(1 - z * z)
-    if (w >= 3 * PI_4)
+    const st = Math.sin(theta)
+    const ct = Math.cos(theta)
+    const sr = Math.sin(r)
+    const cr = Math.cos(r)
+    const w = Math.atan2(
+        Math.sqrt(-square(z - ct * cr) / (square(st) * sr * sr) + 1) * sr,
+        (-z * ct + cr) / st
+    )
+    if (w >= PI)
         return walk_ring(nside, i, cb)
     const t1 = center_t(nside, i, za2tu(z, wrap(a0 - w, PI2)).t)
     const t2 = center_t(nside, i, za2tu(z, wrap(a0 + w, PI2)).t)
     const begin = tu2fxy(nside, t1, u)
     const end = right_next_pixel(nside, tu2fxy(nside, t2, u))
-    let s = begin
     for (let s = begin; !fxy_compare(s, end); s = right_next_pixel(nside, s)) {
         cb(fxy2nest(nside, s.f, s.x, s.y))
     }
