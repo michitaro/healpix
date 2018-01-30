@@ -2661,9 +2661,10 @@ function query_disc_inclusive_nest(nside, v, radius, cb) {
         walk_ring(nside, 4 * nside - 1, cb);
         i2 = 4 * nside - 2;
     }
+    var theta = Math.acos(z0);
     for (var i = i1; i <= i2; ++i)
-        walk_ring_around(nside, i, a0, radius, function (ipix) {
-            if (distance2(pix2vec_nest(nside, ipix), v) <= square(radius + pixrad))
+        walk_ring_around(nside, i, a0, theta, radius + pixrad, function (ipix) {
+            if (angle(pix2vec_nest(nside, ipix), v) <= radius + pixrad)
                 cb(ipix);
         });
 }
@@ -2676,10 +2677,12 @@ function query_disc_inclusive_ring(nside, v, radius, cb_ring) {
 exports.query_disc_inclusive_ring = query_disc_inclusive_ring;
 function max_pixrad(nside) {
     var unit = PI_4 / nside;
-    var d2 = distance2(tu2vec(unit, nside * unit), tu2vec(unit, (nside + 1) * unit));
-    return 2 * Math.asin(Math.sqrt(d2) / 2);
+    return angle(tu2vec(unit, nside * unit), tu2vec(unit, (nside + 1) * unit));
 }
 exports.max_pixrad = max_pixrad;
+function angle(a, b) {
+    return 2 * Math.asin(Math.sqrt(distance2(a, b)) / 2);
+}
 function tu2vec(t, u) {
     var _a = tu2za(t, u), z = _a.z, a = _a.a;
     return za2vec(z, a);
@@ -2690,33 +2693,24 @@ function distance2(a, b) {
     var dz = a[2] - b[2];
     return dx * dx + dy * dy + dz * dz;
 }
-// function walk_ring_range(nside: number, i: number, a1: number, a2: number, cb: (ipix: number) => void) {
-//     const u = PI_4 * (2 - i / nside)
-//     const z = tu2za(0, u).z
-//     const t1 = za2tu(z, wrap(a1, PI2)).t
-//     const t2 = za2tu(z, wrap(a2, PI2)).t
-//     let s = tu2fxy(nside, t1, u)
-//     const end = a2 > a1 + PI2 ? s : tu2fxy(nside, t2, u)
-//     const loop = a2 > a1 + PI && fxy_compare(s, end) ? 1 : 0
-//     let loopCount = 0
-//     while (!(fxy_compare(s, end) && loopCount++ >= loop)) {
-//         cb(fxy2nest(nside, s.f, s.x, s.y))
-//         s = right_next_pixel(nside, s)
-//     }
-// }
-function walk_ring_around(nside, i, a0, delta_a, cb) {
+function walk_ring_around(nside, i, a0, theta, r, cb) {
+    if (theta < r || theta + r > PI)
+        return walk_ring(nside, i, cb);
     var u = PI_4 * (2 - i / nside);
     var z = tu2za(PI_4, u).z;
-    var w = delta_a / Math.sqrt(1 - z * z);
-    if (w >= 3 * PI_4)
+    var st = Math.sin(theta);
+    var ct = Math.cos(theta);
+    var sr = Math.sin(r);
+    var cr = Math.cos(r);
+    var w = Math.atan2(Math.sqrt(-square(z - ct * cr) / (square(st) * sr * sr) + 1) * sr, (-z * ct + cr) / st);
+    if (w >= PI)
         return walk_ring(nside, i, cb);
     var t1 = center_t(nside, i, za2tu(z, wrap(a0 - w, PI2)).t);
     var t2 = center_t(nside, i, za2tu(z, wrap(a0 + w, PI2)).t);
     var begin = tu2fxy(nside, t1, u);
     var end = right_next_pixel(nside, tu2fxy(nside, t2, u));
-    var s = begin;
-    for (var s_1 = begin; !fxy_compare(s_1, end); s_1 = right_next_pixel(nside, s_1)) {
-        cb(fxy2nest(nside, s_1.f, s_1.x, s_1.y));
+    for (var s = begin; !fxy_compare(s, end); s = right_next_pixel(nside, s)) {
+        cb(fxy2nest(nside, s.f, s.x, s.y));
     }
 }
 function center_t(nside, i, t) {
