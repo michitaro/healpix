@@ -76,3 +76,6 @@ npm install @hscmap/healpix
 ## See Also
 * http://healpix.sourceforge.net
 * https://healpy.readthedocs.io
+
+# License
+This software is released under the MIT License, see LICENSE.txt.

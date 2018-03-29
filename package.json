@@ -23,5 +23,6 @@
     "ts-node": "^4.0.1",
     "typescript": "^2.6.2"
   },
-  "repository": "github:michitaro/healpix"
+  "repository": "github:michitaro/healpix",
+  "license": "MIT"
 }
