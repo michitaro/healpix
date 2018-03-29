@@ -78,4 +78,4 @@ npm install @hscmap/healpix
 * https://healpy.readthedocs.io
 
 # License
-This software is released under the MIT License, see LICENSE.txt.
+This software is released under the MIT License, see LICENSE.
