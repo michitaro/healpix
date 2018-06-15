@@ -4,7 +4,7 @@
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "scripts": {
-    "prepublish": "tsc",
+    "prepare": "tsc",
     "test": "echo \"to test, do 'npm run my-test'\"",
     "my-test": "python spec/generate-testcase.py > spec/testcase.json && ts-node spec/test.ts",
     "build-example": "cd docs/example && npm install && npm run build",
@@ -18,12 +18,12 @@
   ],
   "author": "Koike Michitaro",
   "devDependencies": {
-    "@types/lodash": "^4.14.89",
-    "gh-pages": "^1.1.0",
-    "lodash": "^4.17.4",
-    "ts-node": "^4.0.1",
+    "@types/lodash": "^4.14.109",
+    "gh-pages": "^1.2.0",
+    "lodash": "^4.17.10",
+    "ts-node": "^6.1.1",
     "typedoc": "^0.11.1",
-    "typescript": "^2.6.2"
+    "typescript": "^2.9.2"
   },
   "repository": "github:michitaro/healpix",
   "license": "MIT"
