@@ -2523,8 +2523,8 @@ function setupCanvas(canvas) {
 // ---------
 // theta :  colatitude (pi/2 - delta)                [0 , pi]
 // phi   :  longitutde (alpha)                       [0, 2 pi)
-// t     :  coord. of x-axis in sphirical projection [0, 2 pi)
-// u     :  coord. of y-axis in sphirical projection [-1/2, 1/2]
+// t     :  coord. of x-axis in spherical projection [0, 2 pi)
+// u     :  coord. of y-axis in spherical projection [-1/2, 1/2]
 // z     :  cos(theta)                               [-1, 1]
 // a     :  phi                                      [0, 2 pi)
 // f     :  base pixel index                         {0 .. 11}
@@ -2843,7 +2843,7 @@ function sigma(z) {
     else
         return 2 - Math.sqrt(3 * (1 - z));
 }
-// (z, phi) -> sphirical projection
+// (z, phi) -> spherical projection
 function za2tu(z, a) {
     if (Math.abs(z) <= 2. / 3.) {
         var t = a;
@@ -2858,7 +2858,7 @@ function za2tu(z, a) {
         return { t: t, u: u };
     }
 }
-// sphirical projection -> (z, phi)
+// spherical projection -> (z, phi)
 function tu2za(t, u) {
     var abs_u = Math.abs(u);
     if (abs_u >= PI_2) {
@@ -2904,7 +2904,7 @@ function vec2ang(v) {
     return { theta: Math.acos(z), phi: a };
 }
 exports.vec2ang = vec2ang;
-// sphirical projection -> f, p, q
+// spherical projection -> f, p, q
 // f: base pixel index
 // p: coord in north east axis of base pixel
 // q: coord in north west axis of base pixel
@@ -3011,7 +3011,7 @@ function fxy2ring(nside, f, x, y) {
         return ipix;
     }
 }
-// f, x, y -> sphirical projection
+// f, x, y -> spherical projection
 function fxy2tu(nside, f, x, y) {
     var f_row = Math.floor(f / 4);
     var f1 = f_row + 2;
