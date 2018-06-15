@@ -1,5 +1,5 @@
 // do the following command first
-// $ python spec/testcase.py > spec/testcase.json
+// $ python spec/generate-testcase.py > spec/testcase.json
 
 
 import * as _ from 'lodash'
