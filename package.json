@@ -8,7 +8,8 @@
     "test": "echo \"to test, do 'npm run my-test'\"",
     "my-test": "python spec/generate-testcase.py > spec/testcase.json && ts-node spec/test.ts",
     "build-example": "cd docs/example && npm install && npm run build",
-    "gh-pages": "npm run build-example && gh-pages -d ./docs/example/dist"
+    "typedoc": "typedoc --module system --out ./docs/example/dist/typedoc --excludeNotExported",
+    "gh-pages": "rm -rf ./docs/example/dist && npm run build-example && npm run typedoc && touch ./docs/example/dist/.nojekyll && gh-pages --dotfiles -d ./docs/example/dist"
   },
   "keywords": [
     "healpix",
@@ -21,6 +22,7 @@
     "gh-pages": "^1.1.0",
     "lodash": "^4.17.4",
     "ts-node": "^4.0.1",
+    "typedoc": "^0.11.1",
     "typescript": "^2.6.2"
   },
   "repository": "github:michitaro/healpix",

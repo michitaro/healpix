@@ -55,6 +55,9 @@ window.addEventListener('load', e => {
 npm install @hscmap/healpix
 ```
 
+## API
+* [Reference](https://michitaro.github.io/healpix/typedoc/modules/index_.html)
+
 ## Progress
 |API                          |status|
 |-----------------------------|:----:|
