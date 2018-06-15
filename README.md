@@ -56,7 +56,7 @@ npm install @hscmap/healpix
 ```
 
 ## API
-* [Reference](https://michitaro.github.io/healpix/typedoc/modules/index_.html)
+* [Reference](https://michitaro.github.io/healpix/typedoc/modules/_index_.html)
 
 ## Progress
 |API                          |status|
