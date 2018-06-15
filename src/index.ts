@@ -5,8 +5,8 @@
 // ---------
 // theta :  colatitude (pi/2 - delta)                [0 , pi]
 // phi   :  longitutde (alpha)                       [0, 2 pi)
-// t     :  coord. of x-axis in sphirical projection [0, 2 pi)
-// u     :  coord. of y-axis in sphirical projection [-1/2, 1/2]
+// t     :  coord. of x-axis in spherical projection [0, 2 pi)
+// u     :  coord. of y-axis in spherical projection [-1/2, 1/2]
 // z     :  cos(theta)                               [-1, 1]
 // a     :  phi                                      [0, 2 pi)
 // f     :  base pixel index                         {0 .. 11}
@@ -380,7 +380,7 @@ function sigma(z: number): number {
 }
 
 
-// (z, phi) -> sphirical projection
+// (z, phi) -> spherical projection
 function za2tu(z: number, a: number) {
     if (Math.abs(z) <= 2. / 3.) { // equatorial belt
         const t = a
@@ -397,7 +397,7 @@ function za2tu(z: number, a: number) {
 }
 
 
-// sphirical projection -> (z, phi)
+// spherical projection -> (z, phi)
 function tu2za(t: number, u: number) {
     const abs_u = Math.abs(u)
     if (abs_u >= PI_2) { // error
@@ -451,7 +451,7 @@ export function vec2ang(v: V3) {
 }
 
 
-// sphirical projection -> f, p, q
+// spherical projection -> f, p, q
 // f: base pixel index
 // p: coord in north east axis of base pixel
 // q: coord in north west axis of base pixel
@@ -570,7 +570,7 @@ function fxy2ring(nside: number, f: number, x: number, y: number) {
 }
 
 
-// f, x, y -> sphirical projection
+// f, x, y -> spherical projection
 function fxy2tu(nside: number, f: number, x: number, y: number) {
     const f_row = Math.floor(f / 4)
     const f1 = f_row + 2
