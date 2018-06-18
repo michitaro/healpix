@@ -1,13 +1,22 @@
 # HEALPix
 
 ## Introduction
+
 * This module is an implementation of [HEALPix](http://healpix.sourceforge.net) in JavaScript / TypeScript.
+* Pixelisation-related functions (including corners) and disk query are available
+  for the ring and nested HEALPix pixelisation schemes.
 * Most API interfaces are ported from wonderful [healpy](https://healpy.readthedocs.io/en/latest/)
-* [Working demo](http://michitaro.github.io/healpix/)
+* See [API documentation](https://michitaro.github.io/healpix/typedoc/modules/_index_.html) and [Working demo](http://michitaro.github.io/healpix/)
+
+## Install
+```sh
+npm install @hscmap/healpix
+```
+
+## Example (code of [the working demo #1](http://michitaro.github.io/healpix/pixcoord2vec))
 
 ![Screenshot](./docs/images/pixcoord2vec.png)
 
-## Example (code of [the working demo #1](http://michitaro.github.io/healpix/pixcoord2vec))
 ```typescript
 import * as healpix from '@hscmap/healpix'
 import { PerspectiveCanvas } from "./perspective_canvas"
@@ -49,32 +58,6 @@ window.addEventListener('load', e => {
     })
 })
 ```
-
-## Install
-```sh
-npm install @hscmap/healpix
-```
-
-## API
-* [Reference](https://michitaro.github.io/healpix/typedoc/modules/_index_.html)
-
-## Progress
-|API                          |status|
-|-----------------------------|:----:|
-|nest2ring                    |😀|
-|ring2nest                    |😀|
-|vec2pix_nest                 |😀|
-|vec2pix_ring                 |😀|
-|ang2pix_nest                 |😀|
-|ang2pix_ring                 |😀|
-|pix2vec_nest                 |😀|
-|pix2vec_ring                 |😀|
-|query_disc_inclusive_nest    |😀|
-|query_disc_inclusive_ring    |😀|
-|corners_nest                 |😀|
-|corners_ring                 |😀|
-|nside2resol                  |😀|
-|nside2pixarea                |😀|
 
 ## See Also
 * http://healpix.sourceforge.net
