@@ -8,11 +8,12 @@
     "standalone/dist"
   ],
   "scripts": {
-    "prepare": "tsc",
+    "prepare": "tsc ; npm run standalone",
     "test": "echo \"to test, do 'npm run my-test'\"",
     "my-test": "python spec/generate-testcase.py > spec/testcase.json && ts-node spec/test.ts",
     "build-example": "cd docs/example && npm install && npm run build",
     "typedoc": "typedoc --module system --out ./docs/example/dist/typedoc --excludeNotExported",
+    "standalone": "webpack --mode production --context ./standalone --config ./standalone/webpack.config.js",
     "gh-pages": "rm -rf ./docs/example/dist && npm run build-example && npm run typedoc && touch ./docs/example/dist/.nojekyll && gh-pages --dotfiles -d ./docs/example/dist"
   },
   "keywords": [
