@@ -3,3 +3,4 @@
 /spec/testcase.json
 /lib
 /node_modules
+/standalone/dist
