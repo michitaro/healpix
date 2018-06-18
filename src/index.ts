@@ -113,8 +113,21 @@ export function pix2vec_nest(nside: number, ipix: number) {
 }
 
 
+export function pix2ang_nest(nside: number, ipix: number) {
+    const { f, x, y } = nest2fxy(nside, ipix)
+    const { t, u } = fxy2tu(nside, f, x, y)
+    const { z, a } = tu2za(t, u)
+    return { theta: Math.acos(z), phi: a }
+}
+
+
 export function pix2vec_ring(nside: number, ipix: number) {
     return pix2vec_nest(nside, ring2nest(nside, ipix))
+}
+
+
+export function pix2ang_ring(nside: number, ipix: number) {
+    return pix2ang_nest(nside, ring2nest(nside, ipix))
 }
 
 
