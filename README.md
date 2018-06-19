@@ -23,8 +23,14 @@ npm install --save @hscmap/healpix
 
 Then from your Javascript (JS) or Typescript (TS) file, import and use `healpix` like this:
 ```js
-import * as healpix from 'healpix';
+// in JavaScript
+const healpix = require('healpix');
+console.log(healpix.order2nside(0));
+```
 
+```typescript
+// in TypeScript
+import * as healpix from 'healpix';
 console.log(healpix.order2nside(0));
 ```
 
