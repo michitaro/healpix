@@ -21,16 +21,15 @@ If you are using [Node.js](https://nodejs.org/), you can download and install [@
 npm install --save @hscmap/healpix
 ```
 
-Then from your Javascript (JS) or Typescript (TS) file, import and use `healpix` like this:
+Then from your Javascript (JS) you can require and use `healpix` like this:
 ```js
-// in JavaScript
-const healpix = require('healpix');
+const healpix = require('@hscmap/healpix');
 console.log(healpix.order2nside(0));
 ```
 
+From Typescript import and use it like this:
 ```typescript
-// in TypeScript
-import * as healpix from 'healpix';
+import * as healpix from '@hscmap/healpix';
 console.log(healpix.order2nside(0));
 ```
 
@@ -48,7 +47,7 @@ and after that line you can call `healpix` functions like this:
 console.log(healpix.order2nside(0));
 </script>
 ```
-If you don't want to use the latest version, select one from [here](https://unpkg.com/@hscmap/healpix).
+If you don't want to use the latest version, select one from [here](https://unpkg.com/@hscmap/healpix/).
 
 ## Examples
 
