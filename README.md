@@ -41,6 +41,9 @@ console.log(healpix.order2nside(0));
 ```
 If you don't want to use the latest version, select one from [here](https://unpkg.com/@hscmap/healpix).
 
+## Limitations
+* This package can handle only ```norder``` <= 15.
+
 ## Examples
 
 Examples using `healpix` are available here: http://michitaro.github.io/healpix/
