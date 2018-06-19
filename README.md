@@ -8,6 +8,9 @@ This package was implemented based on the description in the [HEALPix paper](htt
 
 The following sections explain installation and usage, and give examples. Detailed [API documentation](https://michitaro.github.io/healpix/typedoc/modules/_index_.html) is also available.
 
+### Limitations
+* This package can handle only ```norder``` <= 15.
+
 ## Installation and Usage
 
 ### With NPM
@@ -40,9 +43,6 @@ console.log(healpix.order2nside(0));
 </script>
 ```
 If you don't want to use the latest version, select one from [here](https://unpkg.com/@hscmap/healpix).
-
-## Limitations
-* This package can handle only ```norder``` <= 15.
 
 ## Examples
 
