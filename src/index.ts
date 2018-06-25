@@ -1,10 +1,33 @@
 /**
  * # API Reference
- * This package based on [this paper](http://iopscience.iop.org/article/10.1086/427976/pdf).
- * ## notations
+ * 
+ * This package based on this paper: [Gorski (2005)](http://iopscience.iop.org/article/10.1086/427976/pdf).
+ *
+ * The key things to understand the implementation are:
+ * - Spherical coordinates in different representations such as `(alpha, delta)`
+ *   or `(theta, phi)` or `(X, Y, z)` are always normalised to `(z, a)`.
+ * - The HEALPix spherical projection is used to map to `(t, u)` (see `za2tu` and `tu2za`).
+ *   See Section 4.4 and Figure 5 in the paper, where `t = x_s` and `u = y_s / pi`.
+ * - A simple affine transformation is used to map to `(f, x, y)` (see `tu2fxy` and `fxy2tu`),
+ *   where `f = {0 .. 11}` is the base pixel index and `(x, y)` is the position
+ *   within the base pixel in the (north-east, north-west) direction
+ *   and `(0, 0)` in the south corner.
+ * - From `(f, x, y)`, the HEALPix pixel index in the "nested" scheme
+ *   is related via `fxy2nest` and `nest2fxy`, and in the "ring" scheme
+ *   via `fxy2ring` and `ring2fxy` in a relatively simple equations.
+ * 
+ * To summarise: there are two geometrical transformations:
+ * `(z, a)` <-> `(t, u)` is the HEALPix spherical projection,
+ * and `(t, u)` <-> `(f, x, y)` is a 45 deg rotation and scaling for each
+ * of the 12 base pixels, so that HEALPix pixels in `(x, y)` are unit squares,
+ * and pixel index compuatations are relatively straightforward,
+ * both in the "nested" and "ring" pixelisation scheme.
+ * 
+ * ## Notations
+ * 
  * <pre>
  * theta :  colatitude (pi/2 - delta)                [0 , pi]
- * phi   :  longitutde (alpha)                       [0, 2 pi)
+ * phi   :  longitude (alpha)                        [0, 2 pi)
  * t     :  coord. of x-axis in spherical projection [0, 2 pi)
  * u     :  coord. of y-axis in spherical projection [-1/2, 1/2]
  * z     :  cos(theta)                               [-1, 1]
@@ -76,7 +99,7 @@ export function ring2nest(nside: number, ipix: number) {
     return fxy2nest(nside, f, x, y)
 }
 
-function ring2fxy(nside: number, ipix: number) {
+export function ring2fxy(nside: number, ipix: number) {
     const polar_lim = 2 * nside * (nside - 1)
     if (ipix < polar_lim) { // north polar cap
         const i = Math.floor((Math.sqrt(1 + 2 * ipix) + 1) / 2)
@@ -227,7 +250,7 @@ function distance2(a: V3, b: V3) {
 }
 
 
-type FXY = { f: number, x: number, y: number }
+export type FXY = { f: number, x: number, y: number }
 
 
 function walk_ring_around(nside: number, i: number, a0: number, theta: number, r: number, cb: (ipix: number) => void) {
@@ -379,7 +402,7 @@ function za2pix_nest(nside: number, z: number, a: number) {
 }
 
 
-function tu2fxy(nside: number, t: number, u: number) {
+export function tu2fxy(nside: number, t: number, u: number) {
     const { f, p, q } = tu2fpq(t, u)
     const x = clamp(Math.floor(nside * p), 0, nside - 1)
     const y = clamp(Math.floor(nside * q), 0, nside - 1)
@@ -406,9 +429,10 @@ function sigma(z: number): number {
         return 2 - Math.sqrt(3 * (1 - z))
 }
 
-
-// (z, phi) -> spherical projection
-function za2tu(z: number, a: number) {
+/**
+ * HEALPix spherical projection.
+ */
+export function za2tu(z: number, a: number) {
     if (Math.abs(z) <= 2. / 3.) { // equatorial belt
         const t = a
         const u = 3 * PI_8 * z
@@ -423,9 +447,10 @@ function za2tu(z: number, a: number) {
     }
 }
 
-
-// spherical projection -> (z, phi)
-function tu2za(t: number, u: number) {
+/**
+ * Inverse HEALPix spherical projection.
+ */
+export function tu2za(t: number, u: number) {
     const abs_u = Math.abs(u)
     if (abs_u >= PI_2) { // error
         return { z: sign(u), a: 0 }
@@ -505,7 +530,7 @@ function tu2fpq(t: number, u: number) {
 
 
 // f, p, q -> nest index
-function fxy2nest(nside: number, f: number, x: number, y: number) {
+export function fxy2nest(nside: number, f: number, x: number, y: number) {
     return f * nside * nside + bit_combine(x, y)
 }
 
@@ -598,7 +623,7 @@ function fxy2ring(nside: number, f: number, x: number, y: number) {
 
 
 // f, x, y -> spherical projection
-function fxy2tu(nside: number, f: number, x: number, y: number) {
+export function fxy2tu(nside: number, f: number, x: number, y: number) {
     const f_row = Math.floor(f / 4)
     const f1 = f_row + 2
     const f2 = 2 * (f % 4) - (f_row % 2) + 1
