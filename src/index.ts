@@ -66,7 +66,7 @@ export function ring2nest(nside: number, ipix: number) {
     return fxy2nest(nside, f, x, y)
 }
 
-export function ring2fxy(nside: number, ipix: number) {
+function ring2fxy(nside: number, ipix: number) {
     const polar_lim = 2 * nside * (nside - 1)
     if (ipix < polar_lim) { // north polar cap
         const i = Math.floor((Math.sqrt(1 + 2 * ipix) + 1) / 2)
@@ -75,7 +75,7 @@ export function ring2fxy(nside: number, ipix: number) {
         const k = j % i
         const x = nside - i + k
         const y = nside - 1 - k
-        return {f, x, y}
+        return { f, x, y }
     }
     if (ipix < polar_lim + 8 * nside * nside) { // equatorial belt
         const k = ipix - polar_lim
@@ -94,7 +94,7 @@ export function ring2fxy(nside: number, ipix: number) {
         const f = 4 * V + (H >> 1) % 4
         const x = pp % nside
         const y = qq % nside
-        return {f, x, y}
+        return { f, x, y }
     }
     else { // south polar cap
         const p = 12 * nside * nside - ipix - 1
@@ -104,7 +104,7 @@ export function ring2fxy(nside: number, ipix: number) {
         const k = j % i
         const x = i - k - 1
         const y = k
-        return {f, x, y}
+        return { f, x, y }
     }
 }
 
