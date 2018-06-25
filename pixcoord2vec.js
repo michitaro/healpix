@@ -2516,26 +2516,29 @@ function setupCanvas(canvas) {
 
 "use strict";
 
-// js implementation of healpix
-// http://iopscience.iop.org/article/10.1086/427976/pdf
-//
-// notations
-// ---------
-// theta :  colatitude (pi/2 - delta)                [0 , pi]
-// phi   :  longitutde (alpha)                       [0, 2 pi)
-// t     :  coord. of x-axis in spherical projection [0, 2 pi)
-// u     :  coord. of y-axis in spherical projection [-1/2, 1/2]
-// z     :  cos(theta)                               [-1, 1]
-// X     :  sin(theta) * cos(phi)                    [-1, 1]
-// Y     :  sin(theta) * sin(phi)                    [-1, 1]
-// a     :  phi                                      [0, 2 pi)
-// f     :  base pixel index                         {0 .. 11}
-// x     :  north-east index in base pixel           [0, nside)
-// y     :  north-west index in base pixel           [0, nside)
-// p     :  north-east axis in base pixel            [0, 1)
-// q     :  north-west axis in base pixel            [0, 1)
-// i     :  ring index                               {1 .. 4 nside - 1}
-// j     :  pixel-in-ring index                      polar cap: {1 .. 4 i} ; equatorial belt: {1 .. 4 nside}
+/**
+ * # API Reference
+ * This package based on [this paper](http://iopscience.iop.org/article/10.1086/427976/pdf).
+ * ## notations
+ * <pre>
+ * theta :  colatitude (pi/2 - delta)                [0 , pi]
+ * phi   :  longitutde (alpha)                       [0, 2 pi)
+ * t     :  coord. of x-axis in spherical projection [0, 2 pi)
+ * u     :  coord. of y-axis in spherical projection [-1/2, 1/2]
+ * z     :  cos(theta)                               [-1, 1]
+ * X     :  sin(theta) * cos(phi)                    [-1, 1]
+ * Y     :  sin(theta) * sin(phi)                    [-1, 1]
+ * a     :  phi                                      [0, 2 pi)
+ * f     :  base pixel index                         {0 .. 11}
+ * x     :  north-east index in base pixel           [0, nside)
+ * y     :  north-west index in base pixel           [0, nside)
+ * p     :  north-east axis in base pixel            [0, 1)
+ * q     :  north-west axis in base pixel            [0, 1)
+ * j     :  pixel-in-ring index                      polar cap: {1 .. 4 i}
+ *                                                   equatorial belt: {1 .. 4 nside}
+ * i     :  ring index                               {1 .. 4 nside - 1}
+ * </pre>
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 function order2nside(order) {
     return 1 << order;

@@ -64,6 +64,33 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<h1 id="api-reference">API Reference</h1>
+						<p>This package based on <a href="http://iopscience.iop.org/article/10.1086/427976/pdf">this paper</a>.</p>
+						<h2 id="notations">notations</h2>
+						<pre>
+theta :  colatitude (pi/2 - delta)                [0 , pi]
+phi   :  longitutde (alpha)                       [0, 2 pi)
+t     :  coord. of x-axis in spherical projection [0, 2 pi)
+u     :  coord. of y-axis in spherical projection [-1/2, 1/2]
+z     :  cos(theta)                               [-1, 1]
+X     :  sin(theta) * cos(phi)                    [-1, 1]
+Y     :  sin(theta) * sin(phi)                    [-1, 1]
+a     :  phi                                      [0, 2 pi)
+f     :  base pixel index                         {0 .. 11}
+x     :  north-east index in base pixel           [0, nside)
+y     :  north-west index in base pixel           [0, nside)
+p     :  north-east axis in base pixel            [0, 1)
+q     :  north-west axis in base pixel            [0, 1)
+j     :  pixel-in-ring index                      polar cap: {1 .. 4 i}
+                                                  equatorial belt: {1 .. 4 nside}
+i     :  ring index                               {1 .. 4 nside - 1}
+</pre>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
@@ -118,7 +145,7 @@
 					<div class="tsd-signature tsd-kind-icon">Healpix<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L609">index.ts:609</a></li>
+							<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L615">index.ts:615</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -128,9 +155,14 @@
 					<div class="tsd-signature tsd-kind-icon">V3<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L23">index.ts:23</a></li>
+							<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L29">index.ts:29</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>3D Vector</p>
+						</div>
+					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
@@ -145,7 +177,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L48">index.ts:48</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L54">index.ts:54</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -174,7 +206,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L54">index.ts:54</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L60">index.ts:60</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -203,7 +235,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L463">index.ts:463</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L469">index.ts:469</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -229,7 +261,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L511">index.ts:511</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L517">index.ts:517</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -255,7 +287,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L532">index.ts:532</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L538">index.ts:538</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -280,7 +312,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L320">index.ts:320</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L326">index.ts:326</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -306,7 +338,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L338">index.ts:338</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L344">index.ts:344</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -332,7 +364,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L617">index.ts:617</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L623">index.ts:623</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -357,7 +389,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L612">index.ts:612</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L618">index.ts:618</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -383,7 +415,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L196">index.ts:196</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L202">index.ts:202</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -406,7 +438,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L60">index.ts:60</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L66">index.ts:66</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -432,7 +464,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L31">index.ts:31</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L37">index.ts:37</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -455,7 +487,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L344">index.ts:344</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L350">index.ts:350</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -478,7 +510,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L350">index.ts:350</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L356">index.ts:356</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -501,7 +533,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L26">index.ts:26</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L32">index.ts:32</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -524,7 +556,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L124">index.ts:124</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L130">index.ts:130</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -552,7 +584,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L137">index.ts:137</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L143">index.ts:143</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -580,7 +612,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L116">index.ts:116</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L122">index.ts:122</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -606,7 +638,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L132">index.ts:132</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L138">index.ts:138</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -632,7 +664,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L355">index.ts:355</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L361">index.ts:361</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -664,7 +696,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L364">index.ts:364</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L370">index.ts:370</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -696,7 +728,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L143">index.ts:143</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L149">index.ts:149</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -746,7 +778,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L190">index.ts:190</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L196">index.ts:196</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -796,7 +828,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L65">index.ts:65</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L71">index.ts:71</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -822,7 +854,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L469">index.ts:469</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L475">index.ts:475</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -847,7 +879,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L36">index.ts:36</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L42">index.ts:42</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -873,7 +905,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/2d3aaef/src/index.ts#L42">index.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L48">index.ts:48</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
