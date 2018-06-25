@@ -373,7 +373,7 @@ function tu2fxy(nside: number, t: number, u: number) {
     const { f, p, q } = tu2fpq(t, u)
     const x = clamp(Math.floor(nside * p), 0, nside - 1)
     const y = clamp(Math.floor(nside * q), 0, nside - 1)
-    return { x, f, y }
+    return { f, x, y }
 }
 
 
