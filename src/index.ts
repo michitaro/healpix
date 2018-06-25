@@ -8,8 +8,12 @@
 // t     :  coord. of x-axis in spherical projection [0, 2 pi)
 // u     :  coord. of y-axis in spherical projection [-1/2, 1/2]
 // z     :  cos(theta)                               [-1, 1]
+// X     :  sin(theta) * cos(phi)                    [-1, 1]
+// Y     :  sin(theta) * sin(phi)                    [-1, 1]
 // a     :  phi                                      [0, 2 pi)
 // f     :  base pixel index                         {0 .. 11}
+// x     :  north-east index in base pixel           [0, nside)
+// y     :  north-west index in base pixel           [0, nside)
 // p     :  north-east axis in base pixel            [0, 1)
 // q     :  north-west axis in base pixel            [0, 1)
 // i     :  ring index                               {1 .. 4 nside - 1}
@@ -377,8 +381,8 @@ function tu2fxy(nside: number, t: number, u: number) {
 }
 
 
-function wrap(x: number, p: number) {
-    return x < 0 ? p - (-x % p) : x % p
+function wrap(A: number, B: number) {
+    return A < 0 ? B - (-A % B) : A % B
 }
 
 
@@ -435,12 +439,12 @@ function tu2za(t: number, u: number) {
 
 
 // (x, y, z) -> (z = cos(theta), phi)
-function vec2za(x: number, y: number, z: number) {
-    const r2 = x * x + y * y
+function vec2za(X: number, Y: number, z: number) {
+    const r2 = X * X + Y * Y
     if (r2 == 0)
         return { z: z < 0 ? -1 : 1, a: 0 }
     else {
-        const a = (Math.atan2(y, x) + PI2) % PI2
+        const a = (Math.atan2(Y, X) + PI2) % PI2
         z /= Math.sqrt(z * z + r2)
         return { z, a }
     }
@@ -450,9 +454,9 @@ function vec2za(x: number, y: number, z: number) {
 // (z = cos(theta), phi) -> (x, y, z)
 function za2vec(z: number, a: number): V3 {
     const sin_theta = Math.sqrt(1 - z * z)
-    const x = sin_theta * Math.cos(a)
-    const y = sin_theta * Math.sin(a)
-    return [x, y, z]
+    const X = sin_theta * Math.cos(a)
+    const Y = sin_theta * Math.sin(a)
+    return [X, Y, z]
 }
 
 
@@ -623,18 +627,18 @@ export function decode_id(id: HealpixId) {
 }
 
 
-const sign: (x: number) => number = (<any>Math).sign || function (x: number) {
-    return x > 0 ? 1 : (x < 0 ? -1 : 0)
+const sign: (A: number) => number = (<any>Math).sign || function (A: number) {
+    return A > 0 ? 1 : (A < 0 ? -1 : 0)
 }
 
 
-function square(x: number) {
-    return x * x
+function square(A: number) {
+    return A * A
 }
 
 
-function clamp(x: number, a: number, b: number) {
-    return x < a ? a : (x > b ? b : x)
+function clamp(Z: number, A: number, B: number) {
+    return Z < A ? A : (Z > B ? B : Z)
 }
 
 
