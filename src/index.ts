@@ -60,7 +60,7 @@ export function nest2ring(nside: number, ipix: number) {
 
 export function ring2nest(nside: number, ipix: number) {
     if (nside == 1) {
-        return ipix;
+        return ipix
     }
     const { f, x, y } = ring2fxy(nside, ipix)
     return fxy2nest(nside, f, x, y)
