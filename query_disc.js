@@ -186,8 +186,12 @@ function setupCanvas(canvas) {
 // t     :  coord. of x-axis in spherical projection [0, 2 pi)
 // u     :  coord. of y-axis in spherical projection [-1/2, 1/2]
 // z     :  cos(theta)                               [-1, 1]
+// X     :  sin(theta) * cos(phi)                    [-1, 1]
+// Y     :  sin(theta) * sin(phi)                    [-1, 1]
 // a     :  phi                                      [0, 2 pi)
 // f     :  base pixel index                         {0 .. 11}
+// x     :  north-east index in base pixel           [0, nside)
+// y     :  north-west index in base pixel           [0, nside)
 // p     :  north-east axis in base pixel            [0, 1)
 // q     :  north-west axis in base pixel            [0, 1)
 // i     :  ring index                               {1 .. 4 nside - 1}
@@ -226,10 +230,15 @@ function nest2ring(nside, ipix) {
     return fxy2ring(nside, f, x, y);
 }
 exports.nest2ring = nest2ring;
-// TODO: cleanup
 function ring2nest(nside, ipix) {
-    if (nside == 1)
+    if (nside == 1) {
         return ipix;
+    }
+    var _a = ring2fxy(nside, ipix), f = _a.f, x = _a.x, y = _a.y;
+    return fxy2nest(nside, f, x, y);
+}
+exports.ring2nest = ring2nest;
+function ring2fxy(nside, ipix) {
     var polar_lim = 2 * nside * (nside - 1);
     if (ipix < polar_lim) {
         var i = Math.floor((Math.sqrt(1 + 2 * ipix) + 1) / 2);
@@ -238,7 +247,7 @@ function ring2nest(nside, ipix) {
         var k = j % i;
         var x = nside - i + k;
         var y = nside - 1 - k;
-        return fxy2nest(nside, f, x, y);
+        return { f: f, x: x, y: y };
     }
     if (ipix < polar_lim + 8 * nside * nside) {
         var k = ipix - polar_lim;
@@ -257,7 +266,7 @@ function ring2nest(nside, ipix) {
         var f = 4 * V + (H >> 1) % 4;
         var x = pp % nside;
         var y = qq % nside;
-        return fxy2nest(nside, f, x, y);
+        return { f: f, x: x, y: y };
     }
     else {
         var p = 12 * nside * nside - ipix - 1;
@@ -267,10 +276,9 @@ function ring2nest(nside, ipix) {
         var k = j % i;
         var x = i - k - 1;
         var y = k;
-        return fxy2nest(nside, f, x, y);
+        return { f: f, x: x, y: y };
     }
 }
-exports.ring2nest = ring2nest;
 function pix2vec_nest(nside, ipix) {
     var _a = nest2fxy(nside, ipix), f = _a.f, x = _a.x, y = _a.y;
     var _b = fxy2tu(nside, f, x, y), t = _b.t, u = _b.u;
@@ -278,10 +286,21 @@ function pix2vec_nest(nside, ipix) {
     return za2vec(z, a);
 }
 exports.pix2vec_nest = pix2vec_nest;
+function pix2ang_nest(nside, ipix) {
+    var _a = nest2fxy(nside, ipix), f = _a.f, x = _a.x, y = _a.y;
+    var _b = fxy2tu(nside, f, x, y), t = _b.t, u = _b.u;
+    var _c = tu2za(t, u), z = _c.z, a = _c.a;
+    return { theta: Math.acos(z), phi: a };
+}
+exports.pix2ang_nest = pix2ang_nest;
 function pix2vec_ring(nside, ipix) {
     return pix2vec_nest(nside, ring2nest(nside, ipix));
 }
 exports.pix2vec_ring = pix2vec_ring;
+function pix2ang_ring(nside, ipix) {
+    return pix2ang_nest(nside, ring2nest(nside, ipix));
+}
+exports.pix2ang_ring = pix2ang_ring;
 // TODO: cleanup
 function query_disc_inclusive_nest(nside, v, radius, cb) {
     if (radius > PI_2) {
@@ -487,10 +506,10 @@ function tu2fxy(nside, t, u) {
     var _a = tu2fpq(t, u), f = _a.f, p = _a.p, q = _a.q;
     var x = clamp(Math.floor(nside * p), 0, nside - 1);
     var y = clamp(Math.floor(nside * q), 0, nside - 1);
-    return { x: x, f: f, y: y };
+    return { f: f, x: x, y: y };
 }
-function wrap(x, p) {
-    return x < 0 ? p - (-x % p) : x % p;
+function wrap(A, B) {
+    return A < 0 ? B - (-A % B) : A % B;
 }
 var PI2 = 2 * Math.PI;
 var PI = Math.PI;
@@ -537,12 +556,12 @@ function tu2za(t, u) {
     }
 }
 // (x, y, z) -> (z = cos(theta), phi)
-function vec2za(x, y, z) {
-    var r2 = x * x + y * y;
+function vec2za(X, Y, z) {
+    var r2 = X * X + Y * Y;
     if (r2 == 0)
         return { z: z < 0 ? -1 : 1, a: 0 };
     else {
-        var a = (Math.atan2(y, x) + PI2) % PI2;
+        var a = (Math.atan2(Y, X) + PI2) % PI2;
         z /= Math.sqrt(z * z + r2);
         return { z: z, a: a };
     }
@@ -550,9 +569,9 @@ function vec2za(x, y, z) {
 // (z = cos(theta), phi) -> (x, y, z)
 function za2vec(z, a) {
     var sin_theta = Math.sqrt(1 - z * z);
-    var x = sin_theta * Math.cos(a);
-    var y = sin_theta * Math.sin(a);
-    return [x, y, z];
+    var X = sin_theta * Math.cos(a);
+    var Y = sin_theta * Math.sin(a);
+    return [X, Y, z];
 }
 function ang2vec(theta, phi) {
     var z = Math.cos(theta);
@@ -700,14 +719,14 @@ function decode_id(id) {
     return { order: order, index: index };
 }
 exports.decode_id = decode_id;
-var sign = Math.sign || function (x) {
-    return x > 0 ? 1 : (x < 0 ? -1 : 0);
+var sign = Math.sign || function (A) {
+    return A > 0 ? 1 : (A < 0 ? -1 : 0);
 };
-function square(x) {
-    return x * x;
+function square(A) {
+    return A * A;
 }
-function clamp(x, a, b) {
-    return x < a ? a : (x > b ? b : x);
+function clamp(Z, A, B) {
+    return Z < A ? A : (Z > B ? B : Z);
 }
 function assert(condition) {
     console.assert(condition);

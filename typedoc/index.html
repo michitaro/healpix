@@ -64,133 +64,67 @@
 			<div class="tsd-panel tsd-typography">
 				<h1 id="healpix">HEALPix</h1>
 				<h2 id="introduction">Introduction</h2>
+				<p>This module is an implementation of <a href="http://healpix.sourceforge.net">HEALPix</a> in <a href="https://www.typescriptlang.org/">TypeScript</a>. A Javascript version is available as well. (Typescript is a typed superset of Javascript, that compiles to Javascript.)</p>
+				<p>This package was implemented based on the description in the <a href="http://iopscience.iop.org/article/10.1086/427976/pdf">HEALPix paper</a>. Pixelisation-related functions (including corners) and disk query are available for the ring and nested HEALPix pixelisation schemes. Most API interfaces are ported from wonderful <a href="https://healpy.readthedocs.io/">healpy</a> Python package, and tests against <code>healpy</code> are used to show correctness.</p>
+				<p>The following sections explain installation and usage, and give examples. Detailed <a href="https://michitaro.github.io/healpix/typedoc/modules/_index_.html">API documentation</a> is also available.</p>
+				<h3 id="limitations">Limitations</h3>
 				<ul>
-					<li>This module is an implementation of <a href="http://healpix.sourceforge.net">HEALPix</a> in JavaScript / TypeScript.</li>
-					<li>Most API interfaces are ported from wonderful <a href="https://healpy.readthedocs.io/en/latest/">healpy</a></li>
-					<li><a href="http://michitaro.github.io/healpix/">Working demo</a></li>
+					<li>This package can handle only <code>norder</code> &lt;= 15.</li>
 				</ul>
-				<p><img src="./docs/images/pixcoord2vec.png" alt="Screenshot"></p>
-				<h2 id="example-code-of-the-working-demo-1-">Example (code of <a href="http://michitaro.github.io/healpix/pixcoord2vec">the working demo #1</a>)</h2>
-				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> healpix <span class="hljs-keyword">from</span> <span class="hljs-string">'@hscmap/healpix'</span>
-<span class="hljs-keyword">import</span> { PerspectiveCanvas } <span class="hljs-keyword">from</span> <span class="hljs-string">"./perspective_canvas"</span>
-
-
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">draw</span>(<span class="hljs-params">canvas: PerspectiveCanvas, theta: <span class="hljs-built_in">number</span>, phi: <span class="hljs-built_in">number</span></span>) </span>{
-    <span class="hljs-keyword">const</span> nstep = <span class="hljs-number">8</span>
-    <span class="hljs-keyword">const</span> nside = <span class="hljs-number">4</span>
-    <span class="hljs-keyword">const</span> npix = <span class="hljs-number">12</span> * nside * nside
-
-    canvas.phi = phi
-    canvas.theta = theta
-    canvas.clear()
-
-    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> ipix = <span class="hljs-number">0</span>; ipix &lt; npix; ++ipix) {
-        canvas.path(<span class="hljs-function"><span class="hljs-params">lineTo</span> =&gt;</span> {
-            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; nstep; ++i) {
-                <span class="hljs-keyword">const</span> ne = i / nstep
-                <span class="hljs-keyword">const</span> v = healpix.pixcoord2vec_nest(nside, ipix, ne, <span class="hljs-number">0</span>)
-                lineTo(v)
-            }
-            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt;= nstep; ++i) {
-                <span class="hljs-keyword">const</span> nw = i / nstep
-                <span class="hljs-keyword">const</span> v = healpix.pixcoord2vec_nest(nside, ipix, <span class="hljs-number">1</span>, nw)
-                lineTo(v)
-            }
-        })
-    }
-}
-
-
-<span class="hljs-built_in">window</span>.addEventListener(<span class="hljs-string">'load'</span>, <span class="hljs-function"><span class="hljs-params">e</span> =&gt;</span> {
-    <span class="hljs-keyword">const</span> canvas = <span class="hljs-keyword">new</span> PerspectiveCanvas(<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'main'</span>) <span class="hljs-keyword">as</span> HTMLCanvasElement)
-    draw(canvas, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>)
-    <span class="hljs-built_in">window</span>.addEventListener(<span class="hljs-string">'mousemove'</span>, <span class="hljs-function"><span class="hljs-params">e</span> =&gt;</span> {
-        <span class="hljs-keyword">const</span> theta = <span class="hljs-built_in">Math</span>.PI * e.clientY / <span class="hljs-built_in">window</span>.innerHeight
-        <span class="hljs-keyword">const</span> phi = <span class="hljs-built_in">Math</span>.PI * e.clientX / <span class="hljs-built_in">window</span>.innerHeight
-        draw(canvas, theta, phi)
-    })
-})
+				<h2 id="installation-and-usage">Installation and Usage</h2>
+				<h3 id="with-npm">With NPM</h3>
+				<p>If you are using <a href="https://nodejs.org/">Node.js</a>, you can download and install <a href="https://www.npmjs.com/package/@hscmap/healpix">@hscmap/healpix</a> with <a href="https://www.npmjs.com/">npm</a>:</p>
+				<pre><code class="lang-sh">npm install --save @hscmap/healpix
 </code></pre>
-				<h2 id="install">Install</h2>
-				<pre><code class="lang-sh">npm install @hscmap/healpix
+				<p>Then from your Javascript (JS) you can require and use <code>healpix</code> like this:</p>
+				<pre><code class="lang-js"><span class="hljs-keyword">const</span> healpix = <span class="hljs-built_in">require</span>(<span class="hljs-string">'@hscmap/healpix'</span>);
+<span class="hljs-built_in">console</span>.log(healpix.order2nside(<span class="hljs-number">0</span>));
 </code></pre>
-				<h2 id="api">API</h2>
+				<p>From Typescript import and use it like this:</p>
+				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> healpix <span class="hljs-keyword">from</span> <span class="hljs-string">'@hscmap/healpix'</span>;
+<span class="hljs-built_in">console</span>.log(healpix.order2nside(<span class="hljs-number">0</span>));
+</code></pre>
+				<h3 id="standalone-js">Standalone JS</h3>
+				<p>Another option is to use <code>healpix.js</code> as a standalone library.</p>
+				<p>Thanks to the <a href="https://unpkg.com/">unpkg</a> CDN, you can simply add this line to your HTML file:</p>
+				<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/@hscmap/healpix@latest/standalone/dist/healpix.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+				<p>and after that line you can call <code>healpix</code> functions like this:</p>
+				<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+<span class="hljs-built_in">console</span>.log(healpix.order2nside(<span class="hljs-number">0</span>));
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+				<p>If you don&#39;t want to use the latest version, select one from <a href="https://unpkg.com/@hscmap/healpix/">here</a>.</p>
+				<h2 id="examples">Examples</h2>
+				<p>Examples using <code>healpix</code> are available here: <a href="http://michitaro.github.io/healpix/">http://michitaro.github.io/healpix/</a></p>
+				<p>The code is available here:</p>
 				<ul>
-					<li><a href="https://michitaro.github.io/healpix/typedoc/modules/_index_.html">Reference</a></li>
+					<li><a href="docs/example/src/pixcoord2vec">docs/example/src/pixcoord2vec</a></li>
+					<li><a href="docs/example/src/query_disc">docs/example/src/query_disc</a></li>
 				</ul>
-				<h2 id="progress">Progress</h2>
-				<table>
-					<thead>
-						<tr>
-							<th>API</th>
-							<th style="text-align:center">status</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>nest2ring</td>
-							<td style="text-align:center">😀</td>
-						</tr>
-						<tr>
-							<td>ring2nest</td>
-							<td style="text-align:center">😀</td>
-						</tr>
-						<tr>
-							<td>vec2pix_nest</td>
-							<td style="text-align:center">😀</td>
-						</tr>
-						<tr>
-							<td>vec2pix_ring</td>
-							<td style="text-align:center">😀</td>
-						</tr>
-						<tr>
-							<td>ang2pix_nest</td>
-							<td style="text-align:center">😀</td>
-						</tr>
-						<tr>
-							<td>ang2pix_ring</td>
-							<td style="text-align:center">😀</td>
-						</tr>
-						<tr>
-							<td>pix2vec_nest</td>
-							<td style="text-align:center">😀</td>
-						</tr>
-						<tr>
-							<td>pix2vec_ring</td>
-							<td style="text-align:center">😀</td>
-						</tr>
-						<tr>
-							<td>query_disc_inclusive_nest</td>
-							<td style="text-align:center">😀</td>
-						</tr>
-						<tr>
-							<td>query_disc_inclusive_ring</td>
-							<td style="text-align:center">😀</td>
-						</tr>
-						<tr>
-							<td>corners_nest</td>
-							<td style="text-align:center">😀</td>
-						</tr>
-						<tr>
-							<td>corners_ring</td>
-							<td style="text-align:center">😀</td>
-						</tr>
-						<tr>
-							<td>nside2resol</td>
-							<td style="text-align:center">😀</td>
-						</tr>
-						<tr>
-							<td>nside2pixarea</td>
-							<td style="text-align:center">😀</td>
-						</tr>
-					</tbody>
-				</table>
+				<p>Instructions how to build the examples locally are in the next section.</p>
+				<h2 id="developer-documentation">Developer documentation</h2>
+				<p>To hack on this package, clone <a href="https://github.com/michitaro/healpix">https://github.com/michitaro/healpix</a> from Github:</p>
+				<pre><code>git <span class="hljs-keyword">clone</span> <span class="hljs-title">https</span>://github.com/michitaro/healpix.git
+cd healpix
+</code></pre><p>Then run <code>npm install</code> to install the tools and dependencies used (especially <a href="https://www.typescriptlang.org/">Typescript</a> and <a href="https://webpack.js.org/">Webpack</a>):</p>
+				<pre><code class="lang-sh">npm install
+</code></pre>
+				<p>The package is implemented in a single Typescript file: <a href="src/index.ts">src/index.ts</a>.</p>
+				<p>To generate the standalone Javascript package <code>standalone/dist/healpix.js</code>, run this command:</p>
+				<pre><code class="lang-sh">npm run standalone
+</code></pre>
+				<p>To compile and run the examples locally:</p>
+				<pre><code>npm <span class="hljs-keyword">run</span><span class="bash"> build-example</span>
+</code></pre><p>To test the package install Python and <a href="http://healpy.readthedocs.io/">healpy</a> first, and then run:</p>
+				<pre><code>npm <span class="hljs-built_in">run</span> <span class="hljs-keyword">my</span>-test
+</code></pre><p>Feedback, issues and contributions welcome: <a href="https://github.com/michitaro/healpix">https://github.com/michitaro/healpix</a></p>
 				<h2 id="see-also">See Also</h2>
 				<ul>
 					<li><a href="http://healpix.sourceforge.net">http://healpix.sourceforge.net</a></li>
 					<li><a href="https://healpy.readthedocs.io">https://healpy.readthedocs.io</a></li>
 				</ul>
-				<h1 id="license">License</h1>
+				<h2 id="license">License</h2>
 				<p>This software is released under the MIT License, see LICENSE.</p>
 			</div>
 		</div>
