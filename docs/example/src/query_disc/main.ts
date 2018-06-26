@@ -61,12 +61,12 @@ function pixelPath(canvas: SimpleCanvas, nside: number, ipix: number, nstep = 4)
         canvas.ctx.lineTo(x1, y1)
     }
 
-    function clamp(x: number, a: number, b: number) {
+    function clip(x: number, a: number, b: number) {
         return x < a ? a : (x > b ? b : x)
     }
 
     function safe(x: number) {
-        return clamp(x, 1.e-9, 1 - 1.e-9)
+        return clip(x, 1.e-9, 1 - 1.e-9)
     }
 
     for (let i = 0; i < nstep; ++i) {
