@@ -33,6 +33,9 @@ export function order2nside(order: number) {
     return 1 << order
 }
 
+export function nside2order(nside: number) {
+    return Math.log2(nside)
+}
 
 export function nside2npix(nside: number) {
     return 12 * nside * nside
@@ -612,24 +615,32 @@ function fxy2tu(nside: number, f: number, x: number, y: number) {
 }
 
 
-export type HealpixId = number
-
-
-export function encode_id(order: number, index: number): HealpixId {
-    return 4 * ((1 << (2 * order)) - 1) + index
+export function orderpix2uniq(order: number, ipix: number): number {
+    /**
+     * Pack `(order, ipix)` into a `uniq` integer.
+     * 
+     * This HEALPix "unique identifier scheme" is starting to be used widely:
+     * - see section 3.2 in http://healpix.sourceforge.net/pdf/intro.pdf
+     * - see section 2.3.1 in http://ivoa.net/documents/MOC/
+     */
+    return 4 * ((1 << (2 * order)) - 1) + ipix
 }
 
-
-export function decode_id(id: HealpixId) {
-    assert(id <= 0x7fffffff)
+export function uniq2orderpix(uniq: number) {
+    /**
+     * Unpack `uniq` integer into `(order, ipix)`.
+     * 
+     * Inverse of `orderpix2uniq`.
+     */
+    assert(uniq <= 0x7fffffff)
     let order = 0
-    let l = (id >> 2) + 1
+    let l = (uniq >> 2) + 1
     while (l >= 4) {
         l >>= 2
         ++order
     }
-    const index = id - (((1 << (2 * order)) - 1) << 2)
-    return { order, index }
+    const ipix = uniq - (((1 << (2 * order)) - 1) << 2)
+    return { order, ipix }
 }
 
 
