@@ -381,8 +381,8 @@ function za2pix_nest(nside: number, z: number, a: number) {
 
 function tu2fxy(nside: number, t: number, u: number) {
     const { f, p, q } = tu2fpq(t, u)
-    const x = clamp(Math.floor(nside * p), 0, nside - 1)
-    const y = clamp(Math.floor(nside * q), 0, nside - 1)
+    const x = clip(Math.floor(nside * p), 0, nside - 1)
+    const y = clip(Math.floor(nside * q), 0, nside - 1)
     return { f, x, y }
 }
 
@@ -488,12 +488,12 @@ function tu2fpq(t: number, u: number) {
     t = wrap(t, 8)
     t += -4
     u += 5
-    const pp = clamp((u + t) / 2, 0, 5)
+    const pp = clip((u + t) / 2, 0, 5)
     const PP = Math.floor(pp)
-    const qq = clamp((u - t) / 2, 3 - PP, 6 - PP)
+    const qq = clip((u - t) / 2, 3 - PP, 6 - PP)
     const QQ = Math.floor(qq)
     const V = 5 - (PP + QQ)
-    if (V < 0) { // clamp
+    if (V < 0) { // clip
         return { f: 0, p: 1, q: 1 }
     }
     const H = PP - QQ + 4
@@ -643,7 +643,7 @@ function square(A: number) {
 }
 
 
-function clamp(Z: number, A: number, B: number) {
+function clip(Z: number, A: number, B: number) {
     return Z < A ? A : (Z > B ? B : Z)
 }
 
