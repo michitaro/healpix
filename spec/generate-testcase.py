@@ -31,6 +31,7 @@ def main():
     corners_ring(testcase)
     orderpix2uniq(testcase)
     uniq2orderpix(testcase)
+    nside2order(testcase)
     json.dump(testcase, args.out, indent=2)
 
 
@@ -240,7 +241,17 @@ def uniq2orderpix(testcase):
                 expected={'order': norder, 'ipix': ipix}
             ))
     testcase['uniq2orderpix'] = cs
-    return
+
+
+def nside2order(testcase):
+    cs = []
+    for order in range(16):
+        nside = 1 << order
+        cs.append(dict(
+            args=(nside,),
+            expected=order,
+        ))
+    testcase['nside2order'] = cs
 
 
 def random_vec():
