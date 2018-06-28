@@ -34,7 +34,7 @@ export function order2nside(order: number) {
 }
 
 export function nside2order(nside: number) {
-    return Math.log2(nside)
+    return ilog2(nside)
 }
 
 export function nside2npix(nside: number) {
@@ -641,6 +641,20 @@ export function uniq2orderpix(uniq: number) {
     }
     const ipix = uniq - (((1 << (2 * order)) - 1) << 2)
     return { order, ipix }
+}
+
+function ilog2(x: number) {
+    /**
+     * log2 for integer numbers.
+     * 
+     * We're not calling Math.log2 because it's not supported on IE yet.
+     */
+    let o = -1
+    while (x > 0) {
+        x >>= 1;
+        ++o;
+    }
+    return o
 }
 
 
