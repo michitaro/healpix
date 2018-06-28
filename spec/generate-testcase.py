@@ -29,8 +29,8 @@ def main():
     max_pixrad(testcase)
     corners_nest(testcase)
     corners_ring(testcase)
-    encode_id(testcase)
-    decode_id(testcase)
+    orderpix2uniq(testcase)
+    uniq2orderpix(testcase)
     json.dump(testcase, args.out, indent=2)
 
 
@@ -210,11 +210,11 @@ def corners_ring(testcase):
     testcase['corners_ring'] = cs
 
 
-def encode_id_python(order, index):
+def orderpix2uniq_python(order, index):
     return 4 * ((1 << (2 * order)) - 1) + index
 
 
-def encode_id(testcase):
+def orderpix2uniq(testcase):
     cs = []
     for norder in range(16):
         nside = 1 << norder
@@ -223,23 +223,23 @@ def encode_id(testcase):
             args = (norder, ipix)
             cs.append(dict(
                 args=args,
-                expected=encode_id_python(*args)
+                expected=orderpix2uniq_python(*args)
             ))
-    testcase['encode_id'] = cs
+    testcase['orderpix2uniq'] = cs
 
 
-def decode_id(testcase):
+def uniq2orderpix(testcase):
     cs = []
     for norder in range(14):
         nside = 1 << norder
         for i in range(1000):
             ipix = random.randrange(12 * nside * nside)
-            uid = encode_id_python(norder, ipix)
+            uid = orderpix2uniq_python(norder, ipix)
             cs.append(dict(
                 args=(uid,),
-                expected={'order': norder, 'index': ipix}
+                expected={'order': norder, 'ipix': ipix}
             ))
-    testcase['decode_id'] = cs
+    testcase['uniq2orderpix'] = cs
     return
 
 
