@@ -68,13 +68,36 @@
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
 						<h1 id="api-reference">API Reference</h1>
-						<p>This package based on <a href="http://iopscience.iop.org/article/10.1086/427976/pdf">this paper</a>.</p>
-						<h2 id="notations">notations</h2>
-						<pre>
+					</div>
+					<p>This package based on this paper: <a href="http://iopscience.iop.org/article/10.1086/427976/pdf">Gorski (2005)</a>.</p>
+					<p>The key things to understand the implementation are:</p>
+					<ul>
+						<li>Spherical coordinates in different representations such as <code>(alpha, delta)</code>
+						or <code>(theta, phi)</code> or <code>(X, Y, z)</code> are always normalised to <code>(z, a)</code>.</li>
+						<li><p>The HEALPix spherical projection is used to map to <code>(t, u)</code> (see <code>za2tu</code> and <code>tu2za</code>).
+							See Section 4.4 and Figure 5 in the paper, where <code>(t, u)</code> is called <code>(x_s, y_s)</code>.</p>
+						</li>
+						<li><p>A simple affine transformation is used to map to <code>(f, x, y)</code> (see <code>tu2fxy</code> and <code>fxy2tu</code>),
+								where <code>f = {0 .. 11}</code> is the base pixel index and <code>(x, y)</code> is the position
+								within the base pixel in the (north-east, north-west) direction
+							and <code>(0, 0)</code> in the south corner.</p>
+						</li>
+						<li>From <code>(f, x, y)</code>, the HEALPix pixel index in the &quot;nested&quot; scheme
+							is related via <code>fxy2nest</code> and <code>nest2fxy</code>, and in the &quot;ring&quot; scheme
+						via <code>fxy2ring</code> and <code>ring2fxy</code> in a relatively simple equations.</li>
+					</ul>
+					<p>To summarise: there are two geometrical transformations:
+						<code>(z, a)</code> <-> <code>(t, u)</code> is the HEALPix spherical projection,
+						and <code>(t, u)</code> <-> <code>(f, x, y)</code> is a 45 deg rotation and scaling for each
+						of the 12 base pixels, so that HEALPix pixels in <code>(x, y)</code> are unit squares,
+						and pixel index compuatations are relatively straightforward,
+					both in the &quot;nested&quot; and &quot;ring&quot; pixelisation scheme.</p>
+					<h2 id="notations">Notations</h2>
+					<pre>
 theta :  colatitude (pi/2 - delta)                [0 , pi]
-phi   :  longitutde (alpha)                       [0, 2 pi)
+phi   :  longitude (alpha)                        [0, 2 pi)
 t     :  coord. of x-axis in spherical projection [0, 2 pi)
-u     :  coord. of y-axis in spherical projection [-1/2, 1/2]
+u     :  coord. of y-axis in spherical projection [-pi/2, pi/2]
 z     :  cos(theta)                               [-1, 1]
 X     :  sin(theta) * cos(phi)                    [-1, 1]
 Y     :  sin(theta) * sin(phi)                    [-1, 1]
@@ -88,7 +111,6 @@ j     :  pixel-in-ring index                      polar cap: {1 .. 4 i}
                                                   equatorial belt: {1 .. 4 nside}
 i     :  ring index                               {1 .. 4 nside - 1}
 </pre>
-					</div>
 				</div>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -98,7 +120,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<section class="tsd-index-section ">
 							<h3>Type aliases</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-type-alias tsd-parent-kind-external-module"><a href="_index_.html#healpixid" class="tsd-kind-icon">Healpix<wbr>Id</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-external-module"><a href="_index_.html#fxy" class="tsd-kind-icon">FXY</a></li>
 								<li class="tsd-kind-type-alias tsd-parent-kind-external-module"><a href="_index_.html#v3" class="tsd-kind-icon">V3</a></li>
 							</ul>
 						</section>
@@ -112,14 +134,16 @@ i     :  ring index                               {1 .. 4 nside - 1}
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#bit_decombine" class="tsd-kind-icon">bit_<wbr>decombine</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#corners_nest" class="tsd-kind-icon">corners_<wbr>nest</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#corners_ring" class="tsd-kind-icon">corners_<wbr>ring</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#decode_id" class="tsd-kind-icon">decode_<wbr>id</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#encode_id" class="tsd-kind-icon">encode_<wbr>id</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#fxy2nest" class="tsd-kind-icon">fxy2nest</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#fxy2tu" class="tsd-kind-icon">fxy2tu</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#max_pixrad" class="tsd-kind-icon">max_<wbr>pixrad</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#nest2ring" class="tsd-kind-icon">nest2ring</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#nside2npix" class="tsd-kind-icon">nside2npix</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#nside2order" class="tsd-kind-icon">nside2order</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#nside2pixarea" class="tsd-kind-icon">nside2pixarea</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#nside2resol" class="tsd-kind-icon">nside2resol</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#order2nside" class="tsd-kind-icon">order2nside</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#orderpix2uniq" class="tsd-kind-icon">orderpix2uniq</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#pix2ang_nest" class="tsd-kind-icon">pix2ang_<wbr>nest</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#pix2ang_ring" class="tsd-kind-icon">pix2ang_<wbr>ring</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#pix2vec_nest" class="tsd-kind-icon">pix2vec_<wbr>nest</a></li>
@@ -128,10 +152,15 @@ i     :  ring index                               {1 .. 4 nside - 1}
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#pixcoord2vec_ring" class="tsd-kind-icon">pixcoord2vec_<wbr>ring</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#query_disc_inclusive_nest" class="tsd-kind-icon">query_<wbr>disc_<wbr>inclusive_<wbr>nest</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#query_disc_inclusive_ring" class="tsd-kind-icon">query_<wbr>disc_<wbr>inclusive_<wbr>ring</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#ring2fxy" class="tsd-kind-icon">ring2fxy</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#ring2nest" class="tsd-kind-icon">ring2nest</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#tu2fxy" class="tsd-kind-icon">tu2fxy</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#tu2za" class="tsd-kind-icon">tu2za</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#uniq2orderpix" class="tsd-kind-icon">uniq2orderpix</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#vec2ang" class="tsd-kind-icon">vec2ang</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#vec2pix_nest" class="tsd-kind-icon">vec2pix_<wbr>nest</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#vec2pix_ring" class="tsd-kind-icon">vec2pix_<wbr>ring</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_index_.html#za2tu" class="tsd-kind-icon">za2tu</a></li>
 							</ul>
 						</section>
 					</div>
@@ -140,14 +169,19 @@ i     :  ring index                               {1 .. 4 nside - 1}
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Type aliases</h2>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module">
-					<a name="healpixid" class="tsd-anchor"></a>
-					<h3>Healpix<wbr>Id</h3>
-					<div class="tsd-signature tsd-kind-icon">Healpix<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="fxy" class="tsd-anchor"></a>
+					<h3>FXY</h3>
+					<div class="tsd-signature tsd-kind-icon">FXY<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L615">index.ts:615</a></li>
+							<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L257">index.ts:257</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+						</ul>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module">
 					<a name="v3" class="tsd-anchor"></a>
@@ -155,7 +189,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 					<div class="tsd-signature tsd-kind-icon">V3<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L29">index.ts:29</a></li>
+							<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L53">index.ts:53</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -177,7 +211,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L54">index.ts:54</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L81">index.ts:81</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -206,7 +240,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L60">index.ts:60</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L87">index.ts:87</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -235,7 +269,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L469">index.ts:469</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L498">index.ts:498</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -261,7 +295,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L517">index.ts:517</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L546">index.ts:546</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -287,7 +321,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L538">index.ts:538</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L567">index.ts:567</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -312,7 +346,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L326">index.ts:326</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L353">index.ts:353</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -338,7 +372,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L344">index.ts:344</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L371">index.ts:371</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -355,53 +389,68 @@ i     :  ring index                               {1 .. 4 nside - 1}
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="decode_id" class="tsd-anchor"></a>
-					<h3>decode_<wbr>id</h3>
+					<a name="fxy2nest" class="tsd-anchor"></a>
+					<h3>fxy2nest</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">decode_<wbr>id<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><a href="_index_.html#healpixid" class="tsd-signature-type">HealpixId</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
+						<li class="tsd-signature tsd-kind-icon">fxy2nest<span class="tsd-signature-symbol">(</span>nside<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, f<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L623">index.ts:623</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L537">index.ts:537</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>id: <a href="_index_.html#healpixid" class="tsd-signature-type">HealpixId</a></h5>
+									<h5>nside: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>f: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>x: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>y: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="fxy2tu" class="tsd-anchor"></a>
+					<h3>fxy2tu</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">fxy2tu<span class="tsd-signature-symbol">(</span>nside<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, f<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L630">index.ts:630</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>nside: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>f: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>x: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>y: <span class="tsd-signature-type">number</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span></h4>
 							<ul class="tsd-parameters">
 							</ul>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="encode_id" class="tsd-anchor"></a>
-					<h3>encode_<wbr>id</h3>
-					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">encode_<wbr>id<span class="tsd-signature-symbol">(</span>order<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_index_.html#healpixid" class="tsd-signature-type">HealpixId</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L618">index.ts:618</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>order: <span class="tsd-signature-type">number</span></h5>
-								</li>
-								<li>
-									<h5>index: <span class="tsd-signature-type">number</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_index_.html#healpixid" class="tsd-signature-type">HealpixId</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -415,7 +464,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L202">index.ts:202</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L229">index.ts:229</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -438,7 +487,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L66">index.ts:66</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L93">index.ts:93</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -464,7 +513,30 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L37">index.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L64">index.ts:64</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>nside: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="nside2order" class="tsd-anchor"></a>
+					<h3>nside2order</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">nside2order<span class="tsd-signature-symbol">(</span>nside<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L60">index.ts:60</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -487,7 +559,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L350">index.ts:350</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L377">index.ts:377</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -510,7 +582,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L356">index.ts:356</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L383">index.ts:383</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -533,13 +605,39 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L32">index.ts:32</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L56">index.ts:56</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>order: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="orderpix2uniq" class="tsd-anchor"></a>
+					<h3>orderpix2uniq</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">orderpix2uniq<span class="tsd-signature-symbol">(</span>order<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, ipix<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L644">index.ts:644</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>order: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>ipix: <span class="tsd-signature-type">number</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -556,7 +654,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L130">index.ts:130</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L157">index.ts:157</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -584,7 +682,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L143">index.ts:143</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L170">index.ts:170</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -612,7 +710,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L122">index.ts:122</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L149">index.ts:149</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -638,7 +736,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L138">index.ts:138</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L165">index.ts:165</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -664,7 +762,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L361">index.ts:361</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L388">index.ts:388</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -696,7 +794,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L370">index.ts:370</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L397">index.ts:397</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -728,7 +826,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L149">index.ts:149</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L176">index.ts:176</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -778,7 +876,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L196">index.ts:196</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L223">index.ts:223</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -819,6 +917,34 @@ i     :  ring index                               {1 .. 4 nside - 1}
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="ring2fxy" class="tsd-anchor"></a>
+					<h3>ring2fxy</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">ring2fxy<span class="tsd-signature-symbol">(</span>nside<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, ipix<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L106">index.ts:106</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>nside: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>ipix: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span></h4>
+							<ul class="tsd-parameters">
+							</ul>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
 					<a name="ring2nest" class="tsd-anchor"></a>
 					<h3>ring2nest</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
@@ -828,7 +954,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L71">index.ts:71</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L98">index.ts:98</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -845,6 +971,95 @@ i     :  ring index                               {1 .. 4 nside - 1}
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="tu2fxy" class="tsd-anchor"></a>
+					<h3>tu2fxy</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">tu2fxy<span class="tsd-signature-symbol">(</span>nside<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, t<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, u<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L409">index.ts:409</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>nside: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>t: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>u: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span></h4>
+							<ul class="tsd-parameters">
+							</ul>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="tu2za" class="tsd-anchor"></a>
+					<h3>tu2za</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">tu2za<span class="tsd-signature-symbol">(</span>t<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, u<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L457">index.ts:457</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Inverse HEALPix spherical projection.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>t: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>u: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span></h4>
+							<ul class="tsd-parameters">
+							</ul>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="uniq2orderpix" class="tsd-anchor"></a>
+					<h3>uniq2orderpix</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">uniq2orderpix<span class="tsd-signature-symbol">(</span>uniq<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L655">index.ts:655</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>uniq: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span></h4>
+							<ul class="tsd-parameters">
+							</ul>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
 					<a name="vec2ang" class="tsd-anchor"></a>
 					<h3>vec2ang</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
@@ -854,7 +1069,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L475">index.ts:475</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L504">index.ts:504</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -879,7 +1094,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L42">index.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L69">index.ts:69</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -905,7 +1120,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/c2841dc/src/index.ts#L48">index.ts:48</a></li>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L75">index.ts:75</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -918,6 +1133,39 @@ i     :  ring index                               {1 .. 4 nside - 1}
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="za2tu" class="tsd-anchor"></a>
+					<h3>za2tu</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">za2tu<span class="tsd-signature-symbol">(</span>z<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, a<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/michitaro/healpix/blob/110fce6/src/index.ts#L439">index.ts:439</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>HEALPix spherical projection.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>z: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>a: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span></h4>
+							<ul class="tsd-parameters">
+							</ul>
 						</li>
 					</ul>
 				</section>
@@ -937,7 +1185,7 @@ i     :  ring index                               {1 .. 4 nside - 1}
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
-						<a href="_index_.html#healpixid" class="tsd-kind-icon">Healpix<wbr>Id</a>
+						<a href="_index_.html#fxy" class="tsd-kind-icon">FXY</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
 						<a href="_index_.html#v3" class="tsd-kind-icon">V3</a>
@@ -964,10 +1212,10 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<a href="_index_.html#corners_ring" class="tsd-kind-icon">corners_<wbr>ring</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="_index_.html#decode_id" class="tsd-kind-icon">decode_<wbr>id</a>
+						<a href="_index_.html#fxy2nest" class="tsd-kind-icon">fxy2nest</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="_index_.html#encode_id" class="tsd-kind-icon">encode_<wbr>id</a>
+						<a href="_index_.html#fxy2tu" class="tsd-kind-icon">fxy2tu</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="_index_.html#max_pixrad" class="tsd-kind-icon">max_<wbr>pixrad</a>
@@ -979,6 +1227,9 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<a href="_index_.html#nside2npix" class="tsd-kind-icon">nside2npix</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_index_.html#nside2order" class="tsd-kind-icon">nside2order</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="_index_.html#nside2pixarea" class="tsd-kind-icon">nside2pixarea</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
@@ -986,6 +1237,9 @@ i     :  ring index                               {1 .. 4 nside - 1}
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="_index_.html#order2nside" class="tsd-kind-icon">order2nside</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_index_.html#orderpix2uniq" class="tsd-kind-icon">orderpix2uniq</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="_index_.html#pix2ang_nest" class="tsd-kind-icon">pix2ang_<wbr>nest</a>
@@ -1012,7 +1266,19 @@ i     :  ring index                               {1 .. 4 nside - 1}
 						<a href="_index_.html#query_disc_inclusive_ring" class="tsd-kind-icon">query_<wbr>disc_<wbr>inclusive_<wbr>ring</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_index_.html#ring2fxy" class="tsd-kind-icon">ring2fxy</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="_index_.html#ring2nest" class="tsd-kind-icon">ring2nest</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_index_.html#tu2fxy" class="tsd-kind-icon">tu2fxy</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_index_.html#tu2za" class="tsd-kind-icon">tu2za</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_index_.html#uniq2orderpix" class="tsd-kind-icon">uniq2orderpix</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="_index_.html#vec2ang" class="tsd-kind-icon">vec2ang</a>
@@ -1022,6 +1288,9 @@ i     :  ring index                               {1 .. 4 nside - 1}
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="_index_.html#vec2pix_ring" class="tsd-kind-icon">vec2pix_<wbr>ring</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_index_.html#za2tu" class="tsd-kind-icon">za2tu</a>
 					</li>
 				</ul>
 			</nav>

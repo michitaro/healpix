@@ -122,11 +122,11 @@ function pixelPath(canvas, nside, ipix, nstep) {
         var _a = canvas.world2screen(x, y), x1 = _a[0], y1 = _a[1];
         canvas.ctx.lineTo(x1, y1);
     };
-    function clamp(x, a, b) {
+    function clip(x, a, b) {
         return x < a ? a : (x > b ? b : x);
     }
     function safe(x) {
-        return clamp(x, 1.e-9, 1 - 1.e-9);
+        return clip(x, 1.e-9, 1 - 1.e-9);
     }
     for (var i = 0; i < nstep; ++i) {
         var ne = i / nstep;
@@ -178,13 +178,37 @@ function setupCanvas(canvas) {
 
 /**
  * # API Reference
- * This package based on [this paper](http://iopscience.iop.org/article/10.1086/427976/pdf).
- * ## notations
+ *
+ * This package based on this paper: [Gorski (2005)](http://iopscience.iop.org/article/10.1086/427976/pdf).
+ *
+ * The key things to understand the implementation are:
+ * - Spherical coordinates in different representations such as `(alpha, delta)`
+ *   or `(theta, phi)` or `(X, Y, z)` are always normalised to `(z, a)`.
+ * - The HEALPix spherical projection is used to map to `(t, u)` (see `za2tu` and `tu2za`).
+ *   See Section 4.4 and Figure 5 in the paper, where `(t, u)` is called `(x_s, y_s)`.
+ *
+ * - A simple affine transformation is used to map to `(f, x, y)` (see `tu2fxy` and `fxy2tu`),
+ *   where `f = {0 .. 11}` is the base pixel index and `(x, y)` is the position
+ *   within the base pixel in the (north-east, north-west) direction
+ *   and `(0, 0)` in the south corner.
+ * - From `(f, x, y)`, the HEALPix pixel index in the "nested" scheme
+ *   is related via `fxy2nest` and `nest2fxy`, and in the "ring" scheme
+ *   via `fxy2ring` and `ring2fxy` in a relatively simple equations.
+ *
+ * To summarise: there are two geometrical transformations:
+ * `(z, a)` <-> `(t, u)` is the HEALPix spherical projection,
+ * and `(t, u)` <-> `(f, x, y)` is a 45 deg rotation and scaling for each
+ * of the 12 base pixels, so that HEALPix pixels in `(x, y)` are unit squares,
+ * and pixel index compuatations are relatively straightforward,
+ * both in the "nested" and "ring" pixelisation scheme.
+ *
+ * ## Notations
+ *
  * <pre>
  * theta :  colatitude (pi/2 - delta)                [0 , pi]
- * phi   :  longitutde (alpha)                       [0, 2 pi)
+ * phi   :  longitude (alpha)                        [0, 2 pi)
  * t     :  coord. of x-axis in spherical projection [0, 2 pi)
- * u     :  coord. of y-axis in spherical projection [-1/2, 1/2]
+ * u     :  coord. of y-axis in spherical projection [-pi/2, pi/2]
  * z     :  cos(theta)                               [-1, 1]
  * X     :  sin(theta) * cos(phi)                    [-1, 1]
  * Y     :  sin(theta) * sin(phi)                    [-1, 1]
@@ -204,6 +228,10 @@ function order2nside(order) {
     return 1 << order;
 }
 exports.order2nside = order2nside;
+function nside2order(nside) {
+    return ilog2(nside);
+}
+exports.nside2order = nside2order;
 function nside2npix(nside) {
     return 12 * nside * nside;
 }
@@ -282,6 +310,7 @@ function ring2fxy(nside, ipix) {
         return { f: f, x: x, y: y };
     }
 }
+exports.ring2fxy = ring2fxy;
 function pix2vec_nest(nside, ipix) {
     var _a = nest2fxy(nside, ipix), f = _a.f, x = _a.x, y = _a.y;
     var _b = fxy2tu(nside, f, x, y), t = _b.t, u = _b.u;
@@ -507,10 +536,11 @@ function za2pix_nest(nside, z, a) {
 }
 function tu2fxy(nside, t, u) {
     var _a = tu2fpq(t, u), f = _a.f, p = _a.p, q = _a.q;
-    var x = clamp(Math.floor(nside * p), 0, nside - 1);
-    var y = clamp(Math.floor(nside * q), 0, nside - 1);
+    var x = clip(Math.floor(nside * p), 0, nside - 1);
+    var y = clip(Math.floor(nside * q), 0, nside - 1);
     return { f: f, x: x, y: y };
 }
+exports.tu2fxy = tu2fxy;
 function wrap(A, B) {
     return A < 0 ? B - (-A % B) : A % B;
 }
@@ -525,7 +555,9 @@ function sigma(z) {
     else
         return 2 - Math.sqrt(3 * (1 - z));
 }
-// (z, phi) -> spherical projection
+/**
+ * HEALPix spherical projection.
+ */
 function za2tu(z, a) {
     if (Math.abs(z) <= 2. / 3.) {
         var t = a;
@@ -540,7 +572,10 @@ function za2tu(z, a) {
         return { t: t, u: u };
     }
 }
-// spherical projection -> (z, phi)
+exports.za2tu = za2tu;
+/**
+ * Inverse HEALPix spherical projection.
+ */
 function tu2za(t, u) {
     var abs_u = Math.abs(u);
     if (abs_u >= PI_2) {
@@ -558,6 +593,7 @@ function tu2za(t, u) {
         return { z: z, a: a };
     }
 }
+exports.tu2za = tu2za;
 // (x, y, z) -> (z = cos(theta), phi)
 function vec2za(X, Y, z) {
     var r2 = X * X + Y * Y;
@@ -596,9 +632,9 @@ function tu2fpq(t, u) {
     t = wrap(t, 8);
     t += -4;
     u += 5;
-    var pp = clamp((u + t) / 2, 0, 5);
+    var pp = clip((u + t) / 2, 0, 5);
     var PP = Math.floor(pp);
-    var qq = clamp((u - t) / 2, 3 - PP, 6 - PP);
+    var qq = clip((u - t) / 2, 3 - PP, 6 - PP);
     var QQ = Math.floor(qq);
     var V = 5 - (PP + QQ);
     if (V < 0) {
@@ -614,6 +650,7 @@ function tu2fpq(t, u) {
 function fxy2nest(nside, f, x, y) {
     return f * nside * nside + bit_combine(x, y);
 }
+exports.fxy2nest = fxy2nest;
 // x = (...x2 x1 x0)_2 <- in binary
 // y = (...y2 y1 y0)_2
 // p = (...y2 x2 y1 x1 y0 x0)_2
@@ -706,29 +743,55 @@ function fxy2tu(nside, f, x, y) {
     var u = PI_2 - i / nside * PI_4;
     return { t: t, u: u };
 }
-function encode_id(order, index) {
-    return 4 * ((1 << (2 * order)) - 1) + index;
+exports.fxy2tu = fxy2tu;
+function orderpix2uniq(order, ipix) {
+    /**
+     * Pack `(order, ipix)` into a `uniq` integer.
+     *
+     * This HEALPix "unique identifier scheme" is starting to be used widely:
+     * - see section 3.2 in http://healpix.sourceforge.net/pdf/intro.pdf
+     * - see section 2.3.1 in http://ivoa.net/documents/MOC/
+     */
+    return 4 * ((1 << (2 * order)) - 1) + ipix;
 }
-exports.encode_id = encode_id;
-function decode_id(id) {
-    assert(id <= 0x7fffffff);
+exports.orderpix2uniq = orderpix2uniq;
+function uniq2orderpix(uniq) {
+    /**
+     * Unpack `uniq` integer into `(order, ipix)`.
+     *
+     * Inverse of `orderpix2uniq`.
+     */
+    assert(uniq <= 0x7fffffff);
     var order = 0;
-    var l = (id >> 2) + 1;
+    var l = (uniq >> 2) + 1;
     while (l >= 4) {
         l >>= 2;
         ++order;
     }
-    var index = id - (((1 << (2 * order)) - 1) << 2);
-    return { order: order, index: index };
+    var ipix = uniq - (((1 << (2 * order)) - 1) << 2);
+    return { order: order, ipix: ipix };
 }
-exports.decode_id = decode_id;
+exports.uniq2orderpix = uniq2orderpix;
+function ilog2(x) {
+    /**
+     * log2 for integer numbers.
+     *
+     * We're not calling Math.log2 because it's not supported on IE yet.
+     */
+    var o = -1;
+    while (x > 0) {
+        x >>= 1;
+        ++o;
+    }
+    return o;
+}
 var sign = Math.sign || function (A) {
     return A > 0 ? 1 : (A < 0 ? -1 : 0);
 };
 function square(A) {
     return A * A;
 }
-function clamp(Z, A, B) {
+function clip(Z, A, B) {
     return Z < A ? A : (Z > B ? B : Z);
 }
 function assert(condition) {
