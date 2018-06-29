@@ -7,7 +7,8 @@
  * - Spherical coordinates in different representations such as `(alpha, delta)`
  *   or `(theta, phi)` or `(X, Y, z)` are always normalised to `(z, a)`.
  * - The HEALPix spherical projection is used to map to `(t, u)` (see `za2tu` and `tu2za`).
- *   See Section 4.4 and Figure 5 in the paper, where `t = x_s` and `u = y_s / pi`.
+ *   See Section 4.4 and Figure 5 in the paper, where `(t, u)` is called `(x_s, y_s)`.
+ *   
  * - A simple affine transformation is used to map to `(f, x, y)` (see `tu2fxy` and `fxy2tu`),
  *   where `f = {0 .. 11}` is the base pixel index and `(x, y)` is the position
  *   within the base pixel in the (north-east, north-west) direction
@@ -29,7 +30,7 @@
  * theta :  colatitude (pi/2 - delta)                [0 , pi]
  * phi   :  longitude (alpha)                        [0, 2 pi)
  * t     :  coord. of x-axis in spherical projection [0, 2 pi)
- * u     :  coord. of y-axis in spherical projection [-1/2, 1/2]
+ * u     :  coord. of y-axis in spherical projection [-pi/2, pi/2]
  * z     :  cos(theta)                               [-1, 1]
  * X     :  sin(theta) * cos(phi)                    [-1, 1]
  * Y     :  sin(theta) * sin(phi)                    [-1, 1]
