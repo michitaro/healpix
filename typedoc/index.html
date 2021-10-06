@@ -1,215 +1,93 @@
-<!doctype html>
-<html class="default no-js">
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>@hscmap/healpix</title>
-	<meta name="description" content="">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="assets/css/main.css">
-</head>
-<body>
-<header>
-	<div class="tsd-page-toolbar">
-		<div class="container">
-			<div class="table-wrap">
-				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
-					<div class="field">
-						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
-						<input id="tsd-search-field" type="text" />
-					</div>
-					<ul class="results">
-						<li class="state loading">Preparing search index...</li>
-						<li class="state failure">The search index is not available</li>
-					</ul>
-					<a href="index.html" class="title">@hscmap/healpix</a>
-				</div>
-				<div class="table-cell" id="tsd-widgets">
-					<div id="tsd-filter">
-						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
-						<div class="tsd-filter-group">
-							<div class="tsd-select" id="tsd-filter-visibility">
-								<span class="tsd-select-label">All</span>
-								<ul class="tsd-select-list">
-									<li data-value="public">Public</li>
-									<li data-value="protected">Public/Protected</li>
-									<li data-value="private" class="selected">All</li>
-								</ul>
-							</div>
-							<input type="checkbox" id="tsd-filter-inherited" checked />
-							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
-							<input type="checkbox" id="tsd-filter-externals" checked />
-							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
-						</div>
-					</div>
-					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="tsd-page-title">
-		<div class="container">
-			<ul class="tsd-breadcrumb">
-				<li>
-					<a href="globals.html">Globals</a>
-				</li>
-			</ul>
-			<h1> @hscmap/healpix</h1>
-		</div>
-	</div>
-</header>
-<div class="container container-main">
-	<div class="row">
-		<div class="col-8 col-content">
-			<div class="tsd-panel tsd-typography">
-				<h1 id="healpix">HEALPix</h1>
-				<h2 id="introduction">Introduction</h2>
-				<p>This module is an implementation of <a href="http://healpix.sourceforge.net">HEALPix</a> in <a href="https://www.typescriptlang.org/">TypeScript</a>. A Javascript version is available as well. (Typescript is a typed superset of Javascript, that compiles to Javascript.)</p>
-				<p>This package was implemented based on the description in the <a href="http://iopscience.iop.org/article/10.1086/427976/pdf">HEALPix paper</a>. Pixelisation-related functions (including corners) and disk query are available for the ring and nested HEALPix pixelisation schemes. Most API interfaces are ported from wonderful <a href="https://healpy.readthedocs.io/">healpy</a> Python package, and tests against <code>healpy</code> are used to show correctness.</p>
-				<p>The following sections explain installation and usage, and give examples. Detailed <a href="https://michitaro.github.io/healpix/typedoc/modules/_index_.html">API documentation</a> is also available.</p>
-				<h3 id="limitations">Limitations</h3>
-				<ul>
-					<li>This package can handle only <code>norder</code> &lt;= 15.</li>
-				</ul>
-				<h2 id="installation-and-usage">Installation and Usage</h2>
-				<h3 id="with-npm">With NPM</h3>
-				<p>If you are using <a href="https://nodejs.org/">Node.js</a>, you can download and install <a href="https://www.npmjs.com/package/@hscmap/healpix">@hscmap/healpix</a> with <a href="https://www.npmjs.com/">npm</a>:</p>
-				<pre><code class="lang-sh">npm install --save @hscmap/healpix
+<!DOCTYPE html><html class="default no-js"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>@hscmap/healpix</title><meta name="description" content="Documentation for @hscmap/healpix"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script async src="assets/search.js" id="search-script"></script></head><body><header><div class="tsd-page-toolbar"><div class="container"><div class="table-wrap"><div class="table-cell" id="tsd-search" data-base="."><div class="field"><label for="tsd-search-field" class="tsd-widget search no-caption">Search</label><input type="text" id="tsd-search-field"/></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">@hscmap/healpix</a></div><div class="table-cell" id="tsd-widgets"><div id="tsd-filter"><a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a><div class="tsd-filter-group"><div class="tsd-select" id="tsd-filter-visibility"><span class="tsd-select-label">All</span><ul class="tsd-select-list"><li data-value="public">Public</li><li data-value="protected">Public/Protected</li><li data-value="private" class="selected">All</li></ul></div> <input type="checkbox" id="tsd-filter-inherited" checked/><label class="tsd-widget" for="tsd-filter-inherited">Inherited</label><input type="checkbox" id="tsd-filter-externals" checked/><label class="tsd-widget" for="tsd-filter-externals">Externals</label></div></div><a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a></div></div></div></div><div class="tsd-page-title"><div class="container"><h1>@hscmap/healpix</h1></div></div></header><div class="container container-main"><div class="row"><div class="col-8 col-content"><div class="tsd-panel tsd-typography">
+<a href="#healpix" id="healpix" style="color: inherit; text-decoration: none;">
+  <h1>HEALPix</h1>
+</a>
+
+<a href="#introduction" id="introduction" style="color: inherit; text-decoration: none;">
+  <h2>Introduction</h2>
+</a>
+<p>This module is an implementation of <a href="http://healpix.sourceforge.net">HEALPix</a> in <a href="https://www.typescriptlang.org/">TypeScript</a>. A Javascript version is available as well. (Typescript is a typed superset of Javascript, that compiles to Javascript.)</p>
+<p>This package was implemented based on the description in the <a href="http://iopscience.iop.org/article/10.1086/427976/pdf">HEALPix paper</a>. Pixelisation-related functions (including corners) and disk query are available for the ring and nested HEALPix pixelisation schemes. Most API interfaces are ported from wonderful <a href="https://healpy.readthedocs.io/">healpy</a> Python package, and tests against <code>healpy</code> are used to show correctness.</p>
+<p>The following sections explain installation and usage, and give examples. Detailed <a href="https://michitaro.github.io/healpix/typedoc/modules/_index_.html">API documentation</a> is also available.</p>
+
+<a href="#limitations" id="limitations" style="color: inherit; text-decoration: none;">
+  <h3>Limitations</h3>
+</a>
+<ul>
+<li>This package can handle only <code>norder</code> &lt;= 15.</li>
+</ul>
+
+<a href="#installation-and-usage" id="installation-and-usage" style="color: inherit; text-decoration: none;">
+  <h2>Installation and Usage</h2>
+</a>
+
+<a href="#with-npm" id="with-npm" style="color: inherit; text-decoration: none;">
+  <h3>With NPM</h3>
+</a>
+<p>If you are using <a href="https://nodejs.org/">Node.js</a>, you can download and install <a href="https://www.npmjs.com/package/@hscmap/healpix">@hscmap/healpix</a> with <a href="https://www.npmjs.com/">npm</a>:</p>
+<pre><code class="language-sh"><span class="hl-0">npm install --save @hscmap/healpix</span>
 </code></pre>
-				<p>Then from your Javascript (JS) you can require and use <code>healpix</code> like this:</p>
-				<pre><code class="lang-js"><span class="hljs-keyword">const</span> healpix = <span class="hljs-built_in">require</span>(<span class="hljs-string">'@hscmap/healpix'</span>);
-<span class="hljs-built_in">console</span>.log(healpix.order2nside(<span class="hljs-number">0</span>));
+<p>Then from your Javascript (JS) you can require and use <code>healpix</code> like this:</p>
+<pre><code class="language-js"><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">healpix</span><span class="hl-0"> = </span><span class="hl-3">require</span><span class="hl-0">(</span><span class="hl-4">&#39;@hscmap/healpix&#39;</span><span class="hl-0">);</span><br/><span class="hl-5">console</span><span class="hl-0">.</span><span class="hl-3">log</span><span class="hl-0">(</span><span class="hl-5">healpix</span><span class="hl-0">.</span><span class="hl-3">order2nside</span><span class="hl-0">(</span><span class="hl-6">0</span><span class="hl-0">));</span>
 </code></pre>
-				<p>From Typescript import and use it like this:</p>
-				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> healpix <span class="hljs-keyword">from</span> <span class="hljs-string">'@hscmap/healpix'</span>;
-<span class="hljs-built_in">console</span>.log(healpix.order2nside(<span class="hljs-number">0</span>));
+<p>From Typescript import and use it like this:</p>
+<pre><code class="language-typescript"><span class="hl-7">import</span><span class="hl-0"> </span><span class="hl-1">*</span><span class="hl-0"> </span><span class="hl-7">as</span><span class="hl-0"> </span><span class="hl-5">healpix</span><span class="hl-0"> </span><span class="hl-7">from</span><span class="hl-0"> </span><span class="hl-4">&#39;@hscmap/healpix&#39;</span><span class="hl-0">;</span><br/><span class="hl-5">console</span><span class="hl-0">.</span><span class="hl-3">log</span><span class="hl-0">(</span><span class="hl-5">healpix</span><span class="hl-0">.</span><span class="hl-3">order2nside</span><span class="hl-0">(</span><span class="hl-6">0</span><span class="hl-0">));</span>
 </code></pre>
-				<h3 id="standalone-js">Standalone JS</h3>
-				<p>Another option is to use <code>healpix.js</code> as a standalone library.</p>
-				<p>Thanks to the <a href="https://unpkg.com/">unpkg</a> CDN, you can simply add this line to your HTML file:</p>
-				<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/@hscmap/healpix@latest/standalone/dist/healpix.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+
+<a href="#standalone-js" id="standalone-js" style="color: inherit; text-decoration: none;">
+  <h3>Standalone JS</h3>
+</a>
+<p>Another option is to use <code>healpix.js</code> as a standalone library.</p>
+<p>Thanks to the <a href="https://unpkg.com/">unpkg</a> CDN, you can simply add this line to your HTML file:</p>
+<pre><code class="language-html"><span class="hl-8">&lt;</span><span class="hl-9">script</span><span class="hl-10"> </span><span class="hl-11">src</span><span class="hl-10">=</span><span class="hl-12">&quot;https://unpkg.com/@hscmap/healpix@latest/standalone/dist/healpix.js&quot;</span><span class="hl-8">&gt;&lt;/</span><span class="hl-9">script</span><span class="hl-8">&gt;</span>
 </code></pre>
-				<p>and after that line you can call <code>healpix</code> functions like this:</p>
-				<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
-<span class="hljs-built_in">console</span>.log(healpix.order2nside(<span class="hljs-number">0</span>));
-</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<p>and after that line you can call <code>healpix</code> functions like this:</p>
+<pre><code class="language-html"><span class="hl-8">&lt;</span><span class="hl-9">script</span><span class="hl-8">&gt;</span><br/><span class="hl-5">console</span><span class="hl-10">.</span><span class="hl-3">log</span><span class="hl-10">(</span><span class="hl-5">healpix</span><span class="hl-10">.</span><span class="hl-3">order2nside</span><span class="hl-10">(</span><span class="hl-6">0</span><span class="hl-10">));</span><br/><span class="hl-8">&lt;/</span><span class="hl-9">script</span><span class="hl-8">&gt;</span>
 </code></pre>
-				<p>If you don&#39;t want to use the latest version, select one from <a href="https://unpkg.com/@hscmap/healpix/">here</a>.</p>
-				<h2 id="examples">Examples</h2>
-				<p>Examples using <code>healpix</code> are available here: <a href="http://michitaro.github.io/healpix/">http://michitaro.github.io/healpix/</a></p>
-				<p>The code is available here:</p>
-				<ul>
-					<li><a href="docs/example/src/pixcoord2vec">docs/example/src/pixcoord2vec</a></li>
-					<li><a href="docs/example/src/query_disc">docs/example/src/query_disc</a></li>
-				</ul>
-				<p>Instructions how to build the examples locally are in the next section.</p>
-				<h2 id="developer-documentation">Developer documentation</h2>
-				<p>To hack on this package, clone <a href="https://github.com/michitaro/healpix">https://github.com/michitaro/healpix</a> from Github:</p>
-				<pre><code>git <span class="hljs-keyword">clone</span> <span class="hljs-title">https</span>://github.com/michitaro/healpix.git
-cd healpix
-</code></pre><p>Then run <code>npm install</code> to install the tools and dependencies used (especially <a href="https://www.typescriptlang.org/">Typescript</a> and <a href="https://webpack.js.org/">Webpack</a>):</p>
-				<pre><code class="lang-sh">npm install
+<p>If you don&#39;t want to use the latest version, select one from <a href="https://unpkg.com/@hscmap/healpix/">here</a>.</p>
+
+<a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
+  <h2>Examples</h2>
+</a>
+<p>Examples using <code>healpix</code> are available here: <a href="http://michitaro.github.io/healpix/">http://michitaro.github.io/healpix/</a></p>
+<p>The code is available here:</p>
+<ul>
+<li><a href="docs/example/src/pixcoord2vec">docs/example/src/pixcoord2vec</a></li>
+<li><a href="docs/example/src/query_disc">docs/example/src/query_disc</a></li>
+</ul>
+<p>Instructions how to build the examples locally are in the next section.</p>
+
+<a href="#developer-documentation" id="developer-documentation" style="color: inherit; text-decoration: none;">
+  <h2>Developer documentation</h2>
+</a>
+<p>To hack on this package, clone <a href="https://github.com/michitaro/healpix">https://github.com/michitaro/healpix</a> from Github:</p>
+<pre><code><span class="hl-5">git</span><span class="hl-0"> </span><span class="hl-5">clone</span><span class="hl-0"> </span><span class="hl-13">https</span><span class="hl-0">:</span><span class="hl-14">//github.com/michitaro/healpix.git</span><br/><span class="hl-5">cd</span><span class="hl-0"> </span><span class="hl-5">healpix</span>
 </code></pre>
-				<p>The package is implemented in a single Typescript file: <a href="src/index.ts">src/index.ts</a>.</p>
-				<p>To generate the standalone Javascript package <code>standalone/dist/healpix.js</code>, run this command:</p>
-				<pre><code class="lang-sh">npm run standalone
+<p>Then run <code>npm install</code> to install the tools and dependencies used (especially <a href="https://www.typescriptlang.org/">Typescript</a> and <a href="https://webpack.js.org/">Webpack</a>):</p>
+<pre><code class="language-sh"><span class="hl-0">npm install</span>
 </code></pre>
-				<p>To compile and run the examples locally:</p>
-				<pre><code>npm <span class="hljs-keyword">run</span><span class="bash"> build-example</span>
-</code></pre><p>To test the package install Python and <a href="http://healpy.readthedocs.io/">healpy</a> first, and then run:</p>
-				<pre><code>npm <span class="hljs-built_in">run</span> <span class="hljs-keyword">my</span>-test
-</code></pre><p>Feedback, issues and contributions welcome: <a href="https://github.com/michitaro/healpix">https://github.com/michitaro/healpix</a></p>
-				<h2 id="see-also">See Also</h2>
-				<ul>
-					<li><a href="http://healpix.sourceforge.net">http://healpix.sourceforge.net</a></li>
-					<li><a href="https://healpy.readthedocs.io">https://healpy.readthedocs.io</a></li>
-				</ul>
-				<h2 id="license">License</h2>
-				<p>This software is released under the MIT License, see LICENSE.</p>
-			</div>
-		</div>
-		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
-			<nav class="tsd-navigation primary">
-				<ul>
-					<li class="globals  ">
-						<a href="globals.html"><em>Globals</em></a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_index_.html">"index"</a>
-					</li>
-				</ul>
-			</nav>
-			<nav class="tsd-navigation secondary menu-sticky">
-				<ul class="before-current">
-				</ul>
-			</nav>
-		</div>
-	</div>
-</div>
-<footer class="with-border-bottom">
-	<div class="container">
-		<h2>Legend</h2>
-		<div class="tsd-legend-group">
-			<ul class="tsd-legend">
-				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
-				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
-				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
-				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
-				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
-				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
-				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
-				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
-				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
-				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
-				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
-			</ul>
-		</div>
-	</div>
-</footer>
-<div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
-</div>
-<div class="overlay"></div>
-<script src="assets/js/main.js"></script>
-<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
-</body>
-</html>
+<p>The package is implemented in a single Typescript file: <a href="src/index.ts">src/index.ts</a>.</p>
+<p>To generate the standalone Javascript package <code>standalone/dist/healpix.js</code>, run this command:</p>
+<pre><code class="language-sh"><span class="hl-0">npm run standalone</span>
+</code></pre>
+<p>To compile and run the examples locally:</p>
+<pre><code><span class="hl-5">npm</span><span class="hl-0"> </span><span class="hl-5">run</span><span class="hl-0"> </span><span class="hl-5">build</span><span class="hl-0">-</span><span class="hl-5">example</span>
+</code></pre>
+<p>To test the package install Python and <a href="http://healpy.readthedocs.io/">healpy</a> first, and then run:</p>
+<pre><code><span class="hl-5">npm</span><span class="hl-0"> </span><span class="hl-5">run</span><span class="hl-0"> </span><span class="hl-5">my</span><span class="hl-0">-</span><span class="hl-5">test</span>
+</code></pre>
+<p>Feedback, issues and contributions welcome: <a href="https://github.com/michitaro/healpix">https://github.com/michitaro/healpix</a></p>
+
+<a href="#see-also" id="see-also" style="color: inherit; text-decoration: none;">
+  <h2>See Also</h2>
+</a>
+<ul>
+<li><a href="http://healpix.sourceforge.net">http://healpix.sourceforge.net</a></li>
+<li><a href="https://healpy.readthedocs.io">https://healpy.readthedocs.io</a></li>
+</ul>
+
+<a href="#license" id="license" style="color: inherit; text-decoration: none;">
+  <h2>License</h2>
+</a>
+<p>This software is released under the MIT License, see LICENSE.</p>
+</div></div><div class="col-4 col-menu menu-sticky-wrap menu-highlight"><nav class="tsd-navigation primary"><ul><li class="current"><a href="modules.html">Exports</a></li></ul></nav><nav class="tsd-navigation secondary menu-sticky"><ul><li class="tsd-kind-type-alias"><a href="modules.html#FXY" class="tsd-kind-icon">FXY</a></li><li class="tsd-kind-type-alias"><a href="modules.html#V3" class="tsd-kind-icon">V3</a></li><li class="tsd-kind-function"><a href="modules.html#ang2pix_nest" class="tsd-kind-icon">ang2pix_<wbr/>nest</a></li><li class="tsd-kind-function"><a href="modules.html#ang2pix_ring" class="tsd-kind-icon">ang2pix_<wbr/>ring</a></li><li class="tsd-kind-function"><a href="modules.html#ang2vec" class="tsd-kind-icon">ang2vec</a></li><li class="tsd-kind-function"><a href="modules.html#bit_combine" class="tsd-kind-icon">bit_<wbr/>combine</a></li><li class="tsd-kind-function"><a href="modules.html#bit_decombine" class="tsd-kind-icon">bit_<wbr/>decombine</a></li><li class="tsd-kind-function"><a href="modules.html#corners_nest" class="tsd-kind-icon">corners_<wbr/>nest</a></li><li class="tsd-kind-function"><a href="modules.html#corners_ring" class="tsd-kind-icon">corners_<wbr/>ring</a></li><li class="tsd-kind-function"><a href="modules.html#fxy2nest" class="tsd-kind-icon">fxy2nest</a></li><li class="tsd-kind-function"><a href="modules.html#fxy2tu" class="tsd-kind-icon">fxy2tu</a></li><li class="tsd-kind-function"><a href="modules.html#max_pixrad" class="tsd-kind-icon">max_<wbr/>pixrad</a></li><li class="tsd-kind-function"><a href="modules.html#nest2ring" class="tsd-kind-icon">nest2ring</a></li><li class="tsd-kind-function"><a href="modules.html#nside2npix" class="tsd-kind-icon">nside2npix</a></li><li class="tsd-kind-function"><a href="modules.html#nside2order" class="tsd-kind-icon">nside2order</a></li><li class="tsd-kind-function"><a href="modules.html#nside2pixarea" class="tsd-kind-icon">nside2pixarea</a></li><li class="tsd-kind-function"><a href="modules.html#nside2resol" class="tsd-kind-icon">nside2resol</a></li><li class="tsd-kind-function"><a href="modules.html#order2nside" class="tsd-kind-icon">order2nside</a></li><li class="tsd-kind-function"><a href="modules.html#orderpix2uniq" class="tsd-kind-icon">orderpix2uniq</a></li><li class="tsd-kind-function"><a href="modules.html#pix2ang_nest" class="tsd-kind-icon">pix2ang_<wbr/>nest</a></li><li class="tsd-kind-function"><a href="modules.html#pix2ang_ring" class="tsd-kind-icon">pix2ang_<wbr/>ring</a></li><li class="tsd-kind-function"><a href="modules.html#pix2vec_nest" class="tsd-kind-icon">pix2vec_<wbr/>nest</a></li><li class="tsd-kind-function"><a href="modules.html#pix2vec_ring" class="tsd-kind-icon">pix2vec_<wbr/>ring</a></li><li class="tsd-kind-function"><a href="modules.html#pixcoord2vec_nest" class="tsd-kind-icon">pixcoord2vec_<wbr/>nest</a></li><li class="tsd-kind-function"><a href="modules.html#pixcoord2vec_ring" class="tsd-kind-icon">pixcoord2vec_<wbr/>ring</a></li><li class="tsd-kind-function"><a href="modules.html#query_disc_inclusive_nest" class="tsd-kind-icon">query_<wbr/>disc_<wbr/>inclusive_<wbr/>nest</a></li><li class="tsd-kind-function"><a href="modules.html#query_disc_inclusive_ring" class="tsd-kind-icon">query_<wbr/>disc_<wbr/>inclusive_<wbr/>ring</a></li><li class="tsd-kind-function"><a href="modules.html#ring2fxy" class="tsd-kind-icon">ring2fxy</a></li><li class="tsd-kind-function"><a href="modules.html#ring2nest" class="tsd-kind-icon">ring2nest</a></li><li class="tsd-kind-function"><a href="modules.html#tu2fxy" class="tsd-kind-icon">tu2fxy</a></li><li class="tsd-kind-function"><a href="modules.html#tu2za" class="tsd-kind-icon">tu2za</a></li><li class="tsd-kind-function"><a href="modules.html#uniq2orderpix" class="tsd-kind-icon">uniq2orderpix</a></li><li class="tsd-kind-function"><a href="modules.html#vec2ang" class="tsd-kind-icon">vec2ang</a></li><li class="tsd-kind-function"><a href="modules.html#vec2pix_nest" class="tsd-kind-icon">vec2pix_<wbr/>nest</a></li><li class="tsd-kind-function"><a href="modules.html#vec2pix_ring" class="tsd-kind-icon">vec2pix_<wbr/>ring</a></li><li class="tsd-kind-function"><a href="modules.html#za2tu" class="tsd-kind-icon">za2tu</a></li></ul></nav></div></div></div><footer class="with-border-bottom"><div class="container"><h2>Settings</h2><p>Theme <select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></p></div></footer><div class="container tsd-generator"><p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div><div class="overlay"></div><script src="assets/main.js"></script></body></html>
