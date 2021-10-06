@@ -6,6 +6,7 @@ type LineTo = (v: V3) => void
 
 export class PerspectiveCanvas {
     private ctx: CanvasRenderingContext2D
+    // @ts-ignore
     private pvm: mat4
 
     phi = 0
