@@ -6,7 +6,7 @@ This module is an implementation of [HEALPix](http://healpix.sourceforge.net) in
 
 This package was implemented based on the description in the [HEALPix paper](http://iopscience.iop.org/article/10.1086/427976/pdf). Pixelisation-related functions (including corners) and disk query are available for the ring and nested HEALPix pixelisation schemes. Most API interfaces are ported from wonderful [healpy](https://healpy.readthedocs.io/) Python package, and tests against `healpy` are used to show correctness.
 
-The following sections explain installation and usage, and give examples. Detailed [API documentation](https://michitaro.github.io/healpix/typedoc/modules/_index_.html) is also available.
+The following sections explain installation and usage, and give examples. Detailed [API documentation](https://michitaro.github.io/healpix/typedoc/) is also available.
 
 ### Limitations
 * This package can handle only ```norder``` <= 15.
