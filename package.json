@@ -1,6 +1,6 @@
 {
   "name": "@hscmap/healpix",
-  "version": "1.4.6",
+  "version": "1.4.8",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "files": [
@@ -13,7 +13,7 @@
     "my-test": "python spec/generate-testcase.py > spec/testcase.json && ts-node spec/test.ts",
     "build-example": "cd docs/example && npm install && npm run build",
     "typedoc": "typedoc --out ./docs/example/dist/typedoc ./src/index.ts",
-    "standalone": "webpack --mode production --context ./standalone --config ./standalone/webpack.config.js",
+    "standalone": "cd standalone && webpack --mode production --config ./webpack.config.js",
     "gh-pages": "rm -rf ./docs/example/dist && npm run build-example && npm run typedoc && touch ./docs/example/dist/.nojekyll && gh-pages --dotfiles -d ./docs/example/dist"
   },
   "keywords": [
@@ -23,16 +23,16 @@
   ],
   "author": "Koike Michitaro",
   "devDependencies": {
-    "@types/lodash": "^4.14.109",
-    "file-loader": "^1.1.11",
-    "gh-pages": "^1.2.0",
-    "lodash": "^4.17.21",
-    "ts-loader": "^4.4.1",
-    "ts-node": "^6.1.1",
-    "typedoc": "^0.22.5",
+    "@types/lodash": "^4",
+    "copy-webpack-plugin": "^10.2.1",
+    "gh-pages": "^1",
+    "lodash": "^4",
+    "ts-loader": "^9",
+    "ts-node": "^10",
+    "typedoc": "^0.22.11",
     "typescript": "^4",
-    "webpack": "^5.57.1",
-    "webpack-cli": "^4.8.0"
+    "webpack": "^5",
+    "webpack-cli": "^4"
   },
   "repository": "github:michitaro/healpix",
   "license": "MIT"

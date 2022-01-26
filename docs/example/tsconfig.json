@@ -5,9 +5,7 @@
         "target": "es5",
         "lib": [
             "dom",
-            "es2015",
-            "es2015.collection"
-        ],
-        "skipLibCheck": true
+            "es5",
+        ]
     }
 }

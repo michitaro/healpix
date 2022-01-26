@@ -6,14 +6,14 @@ type LineTo = (v: V3) => void
 
 export class PerspectiveCanvas {
     private ctx: CanvasRenderingContext2D
-    // @ts-ignore
-    private pvm: mat4
+    private pvm!: mat4
 
     phi = 0
     theta = 0
 
     constructor(readonly el: HTMLCanvasElement) {
         this.ctx = el.getContext('2d')!
+        this.clear()
     }
 
     clear() {

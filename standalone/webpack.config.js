@@ -1,6 +1,7 @@
+const CopyPlugin = require("copy-webpack-plugin")
+
 module.exports = {
     entry: [
-        "file-loader?name=index.html!./index.html",
         "../src",
     ],
     output: {
@@ -13,6 +14,13 @@ module.exports = {
         extensions: ['.ts'],
     },
     module: {
-        rules: [{ test: /\.ts$/, loader: 'ts-loader', options: { compilerOptions: { "declarationDir": './dist' } } }],
+        rules: [{ test: /\.ts$/, loader: 'ts-loader' }],
     },
+    plugins: [
+        new CopyPlugin({
+            patterns: [
+                { from: "./index.html", to: "./" },
+            ],
+        }),
+    ],
 }

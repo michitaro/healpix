@@ -1,28 +1,33 @@
-const merge = require('webpack-merge')
+const CopyPlugin = require("copy-webpack-plugin")
 
+const samples = ['pixcoord2vec', 'query_disc']
 
-const index = {
-    entry: 'file-loader?name=index.html!./src/index.html',
-    output: { filename: 'dummy.js' }
-}
-
-
-const examples = ['pixcoord2vec', 'query_disc'].map(name => ({
-    entry: [
-        `./src/${name}/main.ts`,
-        `file-loader?name=${name}.html!./src/${name}/index.html`,
-    ],
+module.exports = {
+    entry: Object.fromEntries(samples.map(name => [
+        name,
+        {
+            import: `./src/${name}/main.ts`,
+            filename: `${name}.js`,
+        }
+    ])),
     output: {
-        filename: `${name}.js`,
+        path: `${__dirname}/dist`,
     },
-}))
-
-
-const base = {
-    output: { path: `${__dirname}/dist` },
     resolve: { extensions: [".js", ".json", ".ts"] },
-    module: { rules: [{ test: /\.ts$/, loader: 'ts-loader' }] }
+    module: { rules: [{ test: /\.ts$/, loader: 'ts-loader' }] },
+    plugins: [
+        new CopyPlugin({
+            patterns: [
+                { from: "./src/index.html", to: "./index.html" },
+                ...samples.map(name => (
+                    { from: `./src/${name}/index.html`, to: `./${name}.html` }
+                ))
+            ],
+        }),
+    ],
+    devServer: {
+        devMiddleware: {
+            writeToDisk: true,
+        },
+    },
 }
-
-
-module.exports = [...examples, index].map(m => merge(base, m))

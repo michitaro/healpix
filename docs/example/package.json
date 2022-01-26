@@ -3,17 +3,18 @@
   "version": "1.0.0",
   "scripts": {
     "build": "webpack --mode=production",
-    "server": "webpack-cli serve --mode development"
+    "server": "webpack-dev-server --mode=development"
   },
   "dependencies": {
+    "gl-matrix": "^2.4.0"
+  },
+  "devDependencies": {
     "@types/gl-matrix": "^2.4.0",
-    "file-loader": "^1.1.6",
-    "gl-matrix": "^2.4.0",
-    "ts-loader": "^4",
-    "typescript": "^3",
-    "webpack": "^5.57.1",
-    "webpack-cli": "^4.8.0",
-    "webpack-merge": "^4.1.1",
-    "webpack-dev-server": "^4.3.1"
+    "copy-webpack-plugin": "^10.2.1",
+    "ts-loader": "^9",
+    "typescript": "^4",
+    "webpack": "^5",
+    "webpack-cli": "^4",
+    "webpack-dev-server": "^4"
   }
 }
