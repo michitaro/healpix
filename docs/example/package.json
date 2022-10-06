@@ -6,15 +6,14 @@
     "server": "webpack-dev-server --mode=development"
   },
   "dependencies": {
-    "gl-matrix": "^2.4.0"
+    "gl-matrix": "^3.4.3"
   },
   "devDependencies": {
-    "@types/gl-matrix": "^2.4.0",
-    "copy-webpack-plugin": "^10.2.1",
+    "copy-webpack-plugin": "^11.0.0",
     "ts-loader": "^9",
     "typescript": "^4",
     "webpack": "^5",
-    "webpack-cli": "^4",
+    "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4"
   }
 }

@@ -23,16 +23,16 @@
   ],
   "author": "Koike Michitaro",
   "devDependencies": {
-    "@types/lodash": "^4",
-    "copy-webpack-plugin": "^10.2.1",
-    "gh-pages": "^1",
+    "@types/lodash": "^4.14.186",
+    "copy-webpack-plugin": "^11.0.0",
+    "gh-pages": "^4.0.0",
     "lodash": "^4",
-    "ts-loader": "^9",
-    "ts-node": "^10",
-    "typedoc": "^0.22.11",
-    "typescript": "^4",
-    "webpack": "^5",
-    "webpack-cli": "^4"
+    "ts-loader": "^9.4.1",
+    "ts-node": "^10.9.1",
+    "typedoc": "^0.23.15",
+    "typescript": "^4.8.4",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
   },
   "repository": "github:michitaro/healpix",
   "license": "MIT"
